@@ -192,7 +192,8 @@ if __name__ == '__main__':
 					player.movx=0
 	
 		if player.rect.y <= height/8:
-			d=10
+			d=6
+			player.rect.y+=d
 			actual_level.move_back_y(d)	
 		
 		actual_level.update()
