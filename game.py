@@ -10,9 +10,8 @@ real_width=720
 real_height=1080
 
 
-width=1200
+width=36*20
 height=540
-
 
 
 #generar plataformas de colision
@@ -34,13 +33,15 @@ class level(object):
 	object_list=None
 	plataform_list=None
 
-	background=pygame.image.load("background.png")
-	struct=pygame.image.load('walls1.png')
 
 	#muros que rodean el nivel
 	mls=[[36,36*30,0,-height],[36*20,36,0,-height],[36,36*30,36*19,-height],[36*20,36,0,36*29]]
 	
 	def __init__(self):
+		self.image=pygame.image.load("nivel1map.png")
+		self.rect=self.image.get_rect()
+		self.rect.x=0
+		self.rect.y=-height
 		self.wall=pygame.sprite.Group()
 		self.enemies_list=pygame.sprite.Group()
 		self.object_list=pygame.sprite.Group()
@@ -59,11 +60,8 @@ class level(object):
 			w.rect.y+=d
 		self.move_y=0
 
-	def draw(self,window,d):
-		self.move_y=d
-		window.fill(white)
-		window.blit(self.background,(-504+self.move_x,-504+self.move_y))
-		window.blit(self.struct,(0+self.move_x,-height+self.move_y))
+	def draw(self,window):
+		#window.fill(white)
 		self.wall.draw(window)
 		self.enemies_list.draw(window)
 		self.object_list.draw(window)
@@ -79,13 +77,32 @@ class level1(level):
 	      [36*2, 36, 36*9, height-36*6],
 	      [36*5, 36, 36*15, height-36*6],
 	      [36*4, 36, 36*16, height-36*11],
-	      [36*6, 36, 0, height-36*12]
+	      [36*6, 36, 0, height-36*12],
+	      [36*7, 36, 36*13, height-36*17],
+	      [36*2, 36, 36*4, height-36*18],
+	      [36, 36, 36*3, height-36*21],
+	      [36*4, 36, 36*10, height-36*21],
+	      [36*5, 36, 36*5, height-36*24],
+	      [36*5, 36, 0, height-36*25],
+	      [36*10, 36, 36*10, height-36*27]
 	    ]
 	def __init__(self):
 		level.__init__(self)
+		
 		for w in self.wll:
 			plat=walls(w[0],w[1],[w[2],w[3]])
 			self.wall.add(plat)
+
+class background(pygame.sprite.Sprite):
+	def __init__(self,imagen):
+		pygame.sprite.Sprite.__init__(self)
+		self.image=pygame.image.load(imagen).convert_alpha()
+		self.rect=self.image.get_rect()
+		self.rect.x=0
+		self.rect.y=-height
+
+		
+
 class Player(pygame.sprite.Sprite):
 	level=None
 	movx=0
@@ -148,6 +165,9 @@ if __name__ == '__main__':
 	#player=Player('player.png')
 	player=Player([36,36])
 
+	#FONDO
+	back=background('nivel1map.png')
+
 	#creando niveles
 	level_list=[]
 	level_list.append(level1())
@@ -161,11 +181,13 @@ if __name__ == '__main__':
 
 	#listas
 	active_ls=pygame.sprite.Group()
+	active_ls.add(back)
 	active_ls.add(player)
 
 	#dibujos
-	actual_level.draw(window,d)
 	active_ls.draw(window)
+	actual_level.draw(window)
+	
 
 	end=False
 
@@ -194,12 +216,15 @@ if __name__ == '__main__':
 		if player.rect.y <= height/8:
 			d=6
 			player.rect.y+=d
-			actual_level.move_back_y(d)	
+			actual_level.move_back_y(d)
+			back.rect.y+=d
+		if player.rect.y == height-player.rect.height and d!=0:
+			print 'You lose'	
 		
 		actual_level.update()
 		active_ls.update()
-		actual_level.draw(window,d)
 		active_ls.draw(window)
+		actual_level.draw(window)
 		clock.tick(60)
 		pygame.display.flip()			
 					
