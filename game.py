@@ -1,5 +1,5 @@
 import pygame
-
+from pygame.locals import *
 
 #colors
 white=(255,255,255)
@@ -104,18 +104,36 @@ class background(pygame.sprite.Sprite):
 		
 
 class Player(pygame.sprite.Sprite):
+	image=None
 	level=None
 	movx=0
 	movy=0
-	def __init__(self,imagen):
+	contador=-1
+	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
 		#apariencia del jugador
-		##self.image=pygame.image.load(imagen).convert_alpha()
-		self.image=pygame.Surface(imagen)
+		self.image=pygame.image.load('player.png').convert_alpha()
+		#self.image=pygame.Surface(imagen)
 		self.rect=self.image.get_rect()
 		self.rect.x=48
 		self.rect.y=height-self.rect.height
 	
+	def look(self):
+		if self.movx > 0:
+			if self.contador<10:
+				self.image=pygame.image.load('player_start.png').convert_alpha()
+				self.contador+=1
+			if self.contador<=50 and self.contador >=10:
+				self.image=pygame.image.load('player_1.png').convert_alpha()
+				self.contador+=1
+			if self.contador<=100 and self.contador >=50:
+				self.image=pygame.image.load('player_2.png').convert_alpha()
+				self.contador+=1
+			if self.contador==100:
+				self.contador=10
+			print self.contador
+		if self.movx==0:
+			self.image=pygame.image.load('player_start.png').convert_alpha()
 	def gravity(self):
 		if self.movy==0:
 			self.movy=1
@@ -133,6 +151,7 @@ class Player(pygame.sprite.Sprite):
 		if len(collition_ls) > 0 or self.rect.bottom >= height:
 			self.movy = -12
 	def update(self):
+		self.look()
 		self.gravity()
 		self.rect.x+=self.movx		
 		collition_ls=pygame.sprite.spritecollide(self,self.level.wall,False)
@@ -162,8 +181,8 @@ if __name__ == '__main__':
 	d=0
 	
 	#jugador
-	#player=Player('player.png')
-	player=Player([36,36])
+	player=Player()
+	#player=Player([36,36])
 
 	#FONDO
 	back=background('nivel1map.png')
@@ -192,17 +211,16 @@ if __name__ == '__main__':
 	end=False
 
 	clock=pygame.time.Clock()
-	
-	pygame.key.set_repeat(10,100)
+	pygame.key.set_repeat(10,50)
 	while not end:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				end=True
 			elif event.type==pygame.KEYDOWN:
 				if event.key==pygame.K_RIGHT:
-					player.movx=6
+					player.movx=3
 				if event.key==pygame.K_LEFT:
-					player.movx=-6
+					player.movx=-3
 				if event.key==pygame.K_SPACE:
 					player.jump()
 
