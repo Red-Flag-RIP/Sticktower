@@ -20,7 +20,6 @@ window=pygame.display.set_mode([width,height])
 
 
 
-
 class level(object):
 	#move back
 	move_y=0
@@ -95,9 +94,9 @@ class level1(level):
 			plat=walls(w[0],w[1],[w[2],w[3]])
 			self.wall.add(plat)
 		
-		'''for r in self.lines:
+		for r in self.lines:
 			road=moving_line(r[0],[r[1],r[2]])
-			self.plataform_list.add(road)'''
+			self.plataform_list.add(road)
 
 		#for w in self.saw_position:
 		sierra=saw(self.saw_position,[36+18,height-18],[(36*20)-36-18,height-18])
