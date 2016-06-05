@@ -30,6 +30,7 @@ class level(object):
 	object_list=None
 	plataform_list=None
 	line_list=None
+	visible_objects=None
 
 	#muros que rodean el nivel
 	mls=[[36,36*30,0,-height],[36*20,36,0,-height],[36,36*30,36*19,-height],[36*20,36,0,36*29]]
@@ -44,6 +45,7 @@ class level(object):
 		self.object_list=pygame.sprite.Group()
 		self.plataform_list=pygame.sprite.Group()
 		self.line_list=pygame.sprite.Group()
+		self.visible_objects=pygame.sprite.Group()
 		for muro in self.mls:
 			pared=walls(muro[0],muro[1],[muro[2],muro[3]])
 			self.wall.add(pared)
@@ -64,14 +66,17 @@ class level(object):
 		for g in self.line_list:
 			g.rect.y+=d
 		self.move_y=0
-
+		for b in self.visible_objects:
+			b.rect.y+=d
 	def draw(self,window):
 		#window.fill(white)
-		self.wall.draw(window)
+		#self.wall.draw(window)
 		self.enemies_list.draw(window)
 		self.object_list.draw(window)
-		self.plataform_list.draw(window)
 		self.line_list.draw(window)
+		self.plataform_list.draw(window)
+		self.visible_objects.draw(window)
+		
 	
 		
 	
@@ -93,10 +98,10 @@ class level1(level):
 	      [36*10, 36, 36*10, height-36*27]
 	    ]
 	lines=[ [36*17,36+18,height-18],
-		[36*17,36+18,height-36*8],
-		[36*2,36*17-18,height-36*11-18],
-		[36*17,36+18,height-36*14],
-		[36*2,36*4,height-36*18-18],
+		[36*17,36+18,height-36*8-18],
+		[36*3,36*16,height-36*11-18],
+		[36*17,36+18,height-36*14-18],
+		[36*1,36*5,height-36*18-18],
 		[36*3,36*10+18,height-36*21-18]
 		]
 	saw_position=[  [36*16,height-36],
@@ -104,9 +109,19 @@ class level1(level):
 			[36*4+18,height-36*19],
 			[36*10+18,height-36*22]
 		     ]
-	plataform_position=[    [36*2,height-36*9],
-				[36*2,height-36*15]
+	plataform_position=[    [36*3,height-36*9], 
+				[36*3,height-36*15]
 			   ]
+	
+	sarrow= [       [36*19-25,height-36+18-3.5],
+			[36*19-25,height-36*4+18-3.5],
+			[36*19-25,height-36*25+18-3.5]
+		]
+
+	gpos= [ [36,height-36*11],
+		[36,height-36*24]
+	      ]
+			
 	def __init__(self):
 		level.__init__(self)
 		
@@ -116,15 +131,26 @@ class level1(level):
 		
 		for r in self.lines:
 			road=moving_line(r[0],[r[1],r[2]])
-			self.plataform_list.add(road)
-
+			self.line_list.add(road)
 		for w in self.saw_position:
 			sierra=saw(w)
+			sierra.level=self
 			self.enemies_list.add(sierra)
 		for w in self.plataform_position:
 			moving=plataform(w)
+			moving.level=self
 			self.plataform_list.add(moving)
-		
+		for a in self.sarrow:
+			flecha=arrow(a)
+			flecha.level=self
+			self.enemies_list.add(flecha)
+		for p in self.sarrow:
+			base=visible([p[0]+25,p[1]-18+3.5])
+			self.visible_objects.add(base)
+		for g in self.gpos:
+			guard=guardian(g)
+			guard.level=self
+			self.enemies_list.add(guard)
 
 class background(pygame.sprite.Sprite):
 	def __init__(self,imagen):
@@ -167,9 +193,11 @@ if __name__ == '__main__':
 	active_ls=pygame.sprite.Group()
 	active_ls.add(back)
 	active_ls.add(player)
+	
 
 	#dibujos
 	active_ls.draw(window)
+	window.blit(player.image,(player.rect.x,player.rect.y))
 	actual_level.draw(window)
 	
 	speed=4
@@ -209,6 +237,7 @@ if __name__ == '__main__':
 		active_ls.update()
 		active_ls.draw(window)
 		actual_level.draw(window)
+		window.blit(player.image,(player.rect.x,player.rect.y))
 		clock.tick(60)
 		pygame.display.flip()			
 					
