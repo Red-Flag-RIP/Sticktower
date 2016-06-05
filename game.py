@@ -29,7 +29,7 @@ class level(object):
 	enemies_list=None
 	object_list=None
 	plataform_list=None
-
+	line_list=None
 
 	#muros que rodean el nivel
 	mls=[[36,36*30,0,-height],[36*20,36,0,-height],[36,36*30,36*19,-height],[36*20,36,0,36*29]]
@@ -43,6 +43,7 @@ class level(object):
 		self.enemies_list=pygame.sprite.Group()
 		self.object_list=pygame.sprite.Group()
 		self.plataform_list=pygame.sprite.Group()
+		self.line_list=pygame.sprite.Group()
 		for muro in self.mls:
 			pared=walls(muro[0],muro[1],[muro[2],muro[3]])
 			self.wall.add(pared)
@@ -50,11 +51,18 @@ class level(object):
 		self.enemies_list.update()
 		self.object_list.update()
 		self.plataform_list.update()
+		self.line_list.update()
 	
 	def move_back_y(self,d):
 		self.move_y=d
 		for w in self.wall:
 			w.rect.y+=d
+		for l in self.plataform_list:
+			l.rect.y+=d
+		for e in self.enemies_list:
+			e.rect.y+=d
+		for g in self.line_list:
+			g.rect.y+=d
 		self.move_y=0
 
 	def draw(self,window):
@@ -63,6 +71,7 @@ class level(object):
 		self.enemies_list.draw(window)
 		self.object_list.draw(window)
 		self.plataform_list.draw(window)
+		self.line_list.draw(window)
 	
 		
 	
@@ -84,9 +93,20 @@ class level1(level):
 	      [36*10, 36, 36*10, height-36*27]
 	    ]
 	lines=[ [36*17,36+18,height-18],
-		[36*17,36+18,height-36*8] 
+		[36*17,36+18,height-36*8],
+		[36*2,36*17-18,height-36*11-18],
+		[36*17,36+18,height-36*14],
+		[36*2,36*4,height-36*18-18],
+		[36*3,36*10+18,height-36*21-18]
 		]
-	saw_position=[36*16,height-36/2]
+	saw_position=[  [36*16,height-36],
+			[36*17-18,height-36*12],
+			[36*4+18,height-36*19],
+			[36*10+18,height-36*22]
+		     ]
+	plataform_position=[    [36*2,height-36*9],
+				[36*2,height-36*15]
+			   ]
 	def __init__(self):
 		level.__init__(self)
 		
@@ -98,9 +118,12 @@ class level1(level):
 			road=moving_line(r[0],[r[1],r[2]])
 			self.plataform_list.add(road)
 
-		#for w in self.saw_position:
-		sierra=saw(self.saw_position,[36+18,height-18],[(36*20)-36-18,height-18])
-		self.enemies_list.add(sierra)
+		for w in self.saw_position:
+			sierra=saw(w)
+			self.enemies_list.add(sierra)
+		for w in self.plataform_position:
+			moving=plataform(w)
+			self.plataform_list.add(moving)
 		
 
 class background(pygame.sprite.Sprite):
