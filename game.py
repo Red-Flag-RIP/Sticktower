@@ -1,5 +1,7 @@
 import pygame
 from pygame.locals import *
+from player_class import *
+from enemies_class import *
 
 #colors
 white=(255,255,255)
@@ -13,6 +15,8 @@ real_height=1080
 width=36*20
 height=540
 
+window=pygame.display.set_mode([width,height])
+
 
 #generar plataformas de colision
 class walls(pygame.sprite.Sprite):
@@ -24,8 +28,6 @@ class walls(pygame.sprite.Sprite):
 		self.rect.x=p[0]
 		self.rect.y=p[1]
 
-class win(object):
-	width=None
 
 class level(object):
 	#move back
@@ -90,13 +92,16 @@ class level1(level):
 	      [36*5, 36, 0, height-36*25],
 	      [36*10, 36, 36*10, height-36*27]
 	    ]
-	saw_position=[ [36*16,height-36]]
+	saw_position=[36*16,height-36/2]
 	def __init__(self):
 		level.__init__(self)
 		
 		for w in self.wll:
 			plat=walls(w[0],w[1],[w[2],w[3]])
 			self.wall.add(plat)
+		#for w in self.saw_position:
+		sierra=saw(self.saw_position,[36+18,height-18],[(36*20)-36-18,height-18])
+		self.enemies_list.add(sierra)
 		
 
 class background(pygame.sprite.Sprite):
@@ -107,118 +112,9 @@ class background(pygame.sprite.Sprite):
 		self.rect.x=0
 		self.rect.y=-height
 
-class Player(pygame.sprite.Sprite):
-	image=None
-	level=None
-	movx=0
-	movy=0
-	contador=-1
-	itr=7
-	def __init__(self):
-		pygame.sprite.Sprite.__init__(self)
-		#apariencia del jugador
-		self.image=pygame.image.load('player_startright.png').convert_alpha()
-		#self.image=pygame.Surface(imagen)
-		self.rect=self.image.get_rect()
-		self.rect.x=48
-		self.rect.y=height-self.rect.height
-	
-	def look(self):
-		if self.movx > 0:
-			if self.contador<self.itr:
-				self.image=pygame.image.load('player_run_right1.png').convert_alpha()
-				self.contador+=1
-			if self.contador>=self.itr and self.contador <=self.itr*2:
-				self.image=pygame.image.load('player_run_right2.png').convert_alpha()
-				self.contador+=1
-			if self.contador>=self.itr*2 and self.contador <=self.itr*3:
-				self.image=pygame.image.load('player_run_right3.png').convert_alpha()
-				self.contador+=1
-			if self.contador>=self.itr*3 and self.contador<=self.itr*4:
-				self.image=pygame.image.load('player_run_right4.png').convert_alpha()
-				self.contador+=1
-			if self.contador>=self.itr*4 and self.contador<=self.itr*5:
-				self.image=pygame.image.load('player_run_right4.png').convert_alpha()
-				self.contador+=1
-			if self.contador>=self.itr*5 and self.contador<=self.itr*6:
-				self.image=pygame.image.load('player_run_right5.png').convert_alpha()
-				self.contador+=1
-			if self.contador==self.itr*6:
-				self.contador=0
-				self.image=pygame.image.load('player_run_right1.png').convert_alpha()
-		if self.movx==0:
-			self.contador=0
-			self.image=pygame.image.load('player_startright.png').convert_alpha()
-		
-		if self.movx < 0:
-			if self.contador<self.itr:
-				self.image=pygame.image.load('player_run_left1.png').convert_alpha()
-				self.contador+=1
-			if self.contador>=self.itr*1 and self.contador <=self.itr*2:
-				self.image=pygame.image.load('player_run_left2.png').convert_alpha()
-				self.contador+=1
-			if self.contador>=self.itr*2 and self.contador <=self.itr*3:
-				self.image=pygame.image.load('player_run_left3.png').convert_alpha()
-				self.contador+=1
-			if self.contador>=self.itr*3 and self.contador<=self.itr*4:
-				self.image=pygame.image.load('player_run_left4.png').convert_alpha()
-				self.contador+=1
-			if self.contador>=self.itr*4 and self.contador<=self.itr*5:
-				self.image=pygame.image.load('player_run_left4.png').convert_alpha()
-				self.contador+=1
-			if self.contador>=self.itr*5 and self.contador<=self.itr*6:
-				self.image=pygame.image.load('player_run_left5.png').convert_alpha()
-				self.contador+=1
-			if self.contador==self.itr*6:
-				self.contador=0
-				self.image=pygame.image.load('player_run_left1.png').convert_alpha()
-		if self.movx==0:
-			self.contador=0
-			self.image=pygame.image.load('player_startright.png').convert_alpha()
-
-	def gravity(self):
-		if self.movy==0:
-			self.movy=1
-		else:
-			self.movy+=.35
-		if self.rect.y >= height-self.rect.height and self.movy >=0:
-			self.movy=0
-			self.rect.y = height - self.rect.height
-	def jump(self):
-		self.rect.y += 2
-		collition_ls=pygame.sprite.spritecollide(self,self.level.wall,False)
-		self.rect.y -= 2
-        
-		# Si es posible saltar, aumentamos velocidad hacia arriba
-		if len(collition_ls) > 0 or self.rect.bottom >= height:
-			self.movy = -12
-	def update(self):
-		self.look()
-		self.gravity()
-		self.rect.x+=self.movx		
-		collition_ls=pygame.sprite.spritecollide(self,self.level.wall,False)
-
-		#colision por los lados
-		for muro in collition_ls:
-            		if self.movx > 0:
-				self.rect.right = muro.rect.left
-			elif self.movx < 0:
-				self.rect.left = muro.rect.right
-		#colision superior/inferior
-		self.rect.y+=self.movy
-		collition_ls=pygame.sprite.spritecollide(self,self.level.wall,False)
-		for muro in collition_ls:
-            		if self.movy > 0:
-				self.rect.bottom = muro.rect.top
-				self.movy=0
-			elif self.movy < 0:
-				self.rect.top = muro.rect.bottom
-			self.movy=0
-
 
 if __name__ == '__main__':
 	pygame.init()
-	window=pygame.display.set_mode([width,height])
 	pygame.display.set_caption("Stick tower")
 
 	#VARIABLE D QUE ME DEFINE LA VELOCIDAD DE CAMBIO DEL FONDO
