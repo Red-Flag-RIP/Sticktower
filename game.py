@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 from player_class import *
 from enemies_class import *
+from plataform_class import *
 
 #colors
 white=(255,255,255)
@@ -18,15 +19,6 @@ height=540
 window=pygame.display.set_mode([width,height])
 
 
-#generar plataformas de colision
-class walls(pygame.sprite.Sprite):
-	def __init__(self,w,h,p):
-		pygame.sprite.Sprite.__init__(self)
-		#apariencia del mapa
-		self.image=pygame.Surface([w,h])
-		self.rect=self.image.get_rect()
-		self.rect.x=p[0]
-		self.rect.y=p[1]
 
 
 class level(object):
@@ -92,6 +84,9 @@ class level1(level):
 	      [36*5, 36, 0, height-36*25],
 	      [36*10, 36, 36*10, height-36*27]
 	    ]
+	lines=[ [36*17,36+18,height-18],
+		[36*4,36*8,height-36*8] 
+		]
 	saw_position=[36*16,height-36/2]
 	def __init__(self):
 		level.__init__(self)
@@ -99,6 +94,11 @@ class level1(level):
 		for w in self.wll:
 			plat=walls(w[0],w[1],[w[2],w[3]])
 			self.wall.add(plat)
+		
+		'''for r in self.lines:
+			road=moving_line(r[0],[r[1],r[2]])
+			self.plataform_list.add(road)'''
+
 		#for w in self.saw_position:
 		sierra=saw(self.saw_position,[36+18,height-18],[(36*20)-36-18,height-18])
 		self.enemies_list.add(sierra)
