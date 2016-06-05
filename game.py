@@ -23,6 +23,10 @@ class walls(pygame.sprite.Sprite):
 		self.rect=self.image.get_rect()
 		self.rect.x=p[0]
 		self.rect.y=p[1]
+
+class win(object):
+	width=None
+
 class level(object):
 	#move back
 	move_y=0
@@ -86,12 +90,14 @@ class level1(level):
 	      [36*5, 36, 0, height-36*25],
 	      [36*10, 36, 36*10, height-36*27]
 	    ]
+	saw_position=[ [36*16,height-36]]
 	def __init__(self):
 		level.__init__(self)
 		
 		for w in self.wll:
 			plat=walls(w[0],w[1],[w[2],w[3]])
 			self.wall.add(plat)
+		
 
 class background(pygame.sprite.Sprite):
 	def __init__(self,imagen):
@@ -101,18 +107,17 @@ class background(pygame.sprite.Sprite):
 		self.rect.x=0
 		self.rect.y=-height
 
-		
-
 class Player(pygame.sprite.Sprite):
 	image=None
 	level=None
 	movx=0
 	movy=0
 	contador=-1
+	itr=7
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
 		#apariencia del jugador
-		self.image=pygame.image.load('player.png').convert_alpha()
+		self.image=pygame.image.load('player_startright.png').convert_alpha()
 		#self.image=pygame.Surface(imagen)
 		self.rect=self.image.get_rect()
 		self.rect.x=48
@@ -120,20 +125,57 @@ class Player(pygame.sprite.Sprite):
 	
 	def look(self):
 		if self.movx > 0:
-			if self.contador<10:
-				self.image=pygame.image.load('player_start.png').convert_alpha()
+			if self.contador<self.itr:
+				self.image=pygame.image.load('player_run_right1.png').convert_alpha()
 				self.contador+=1
-			if self.contador<=50 and self.contador >=10:
-				self.image=pygame.image.load('player_1.png').convert_alpha()
+			if self.contador>=self.itr and self.contador <=self.itr*2:
+				self.image=pygame.image.load('player_run_right2.png').convert_alpha()
 				self.contador+=1
-			if self.contador<=100 and self.contador >=50:
-				self.image=pygame.image.load('player_2.png').convert_alpha()
+			if self.contador>=self.itr*2 and self.contador <=self.itr*3:
+				self.image=pygame.image.load('player_run_right3.png').convert_alpha()
 				self.contador+=1
-			if self.contador==100:
-				self.contador=10
-			print self.contador
+			if self.contador>=self.itr*3 and self.contador<=self.itr*4:
+				self.image=pygame.image.load('player_run_right4.png').convert_alpha()
+				self.contador+=1
+			if self.contador>=self.itr*4 and self.contador<=self.itr*5:
+				self.image=pygame.image.load('player_run_right4.png').convert_alpha()
+				self.contador+=1
+			if self.contador>=self.itr*5 and self.contador<=self.itr*6:
+				self.image=pygame.image.load('player_run_right5.png').convert_alpha()
+				self.contador+=1
+			if self.contador==self.itr*6:
+				self.contador=0
+				self.image=pygame.image.load('player_run_right1.png').convert_alpha()
 		if self.movx==0:
-			self.image=pygame.image.load('player_start.png').convert_alpha()
+			self.contador=0
+			self.image=pygame.image.load('player_startright.png').convert_alpha()
+		
+		if self.movx < 0:
+			if self.contador<self.itr:
+				self.image=pygame.image.load('player_run_left1.png').convert_alpha()
+				self.contador+=1
+			if self.contador>=self.itr*1 and self.contador <=self.itr*2:
+				self.image=pygame.image.load('player_run_left2.png').convert_alpha()
+				self.contador+=1
+			if self.contador>=self.itr*2 and self.contador <=self.itr*3:
+				self.image=pygame.image.load('player_run_left3.png').convert_alpha()
+				self.contador+=1
+			if self.contador>=self.itr*3 and self.contador<=self.itr*4:
+				self.image=pygame.image.load('player_run_left4.png').convert_alpha()
+				self.contador+=1
+			if self.contador>=self.itr*4 and self.contador<=self.itr*5:
+				self.image=pygame.image.load('player_run_left4.png').convert_alpha()
+				self.contador+=1
+			if self.contador>=self.itr*5 and self.contador<=self.itr*6:
+				self.image=pygame.image.load('player_run_left5.png').convert_alpha()
+				self.contador+=1
+			if self.contador==self.itr*6:
+				self.contador=0
+				self.image=pygame.image.load('player_run_left1.png').convert_alpha()
+		if self.movx==0:
+			self.contador=0
+			self.image=pygame.image.load('player_startright.png').convert_alpha()
+
 	def gravity(self):
 		if self.movy==0:
 			self.movy=1
@@ -172,6 +214,8 @@ class Player(pygame.sprite.Sprite):
 			elif self.movy < 0:
 				self.rect.top = muro.rect.bottom
 			self.movy=0
+
+
 if __name__ == '__main__':
 	pygame.init()
 	window=pygame.display.set_mode([width,height])
@@ -186,6 +230,9 @@ if __name__ == '__main__':
 
 	#FONDO
 	back=background('nivel1map.png')
+
+	#enemigos
+	
 
 	#creando niveles
 	level_list=[]
@@ -207,6 +254,7 @@ if __name__ == '__main__':
 	active_ls.draw(window)
 	actual_level.draw(window)
 	
+	speed=4
 
 	end=False
 
@@ -218,9 +266,9 @@ if __name__ == '__main__':
 				end=True
 			elif event.type==pygame.KEYDOWN:
 				if event.key==pygame.K_RIGHT:
-					player.movx=3
+					player.movx=speed
 				if event.key==pygame.K_LEFT:
-					player.movx=-3
+					player.movx=-speed
 				if event.key==pygame.K_SPACE:
 					player.jump()
 
