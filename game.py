@@ -84,7 +84,7 @@ class level1(level):
 	      [36*10, 36, 36*10, height-36*27]
 	    ]
 	lines=[ [36*17,36+18,height-18],
-		[36*4,36*8,height-36*8] 
+		[36*17,36+18,height-36*8] 
 		]
 	saw_position=[36*16,height-36/2]
 	def __init__(self):
