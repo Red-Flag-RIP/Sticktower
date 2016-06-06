@@ -1,0 +1,77 @@
+[nivel]
+origen=imagen
+mapa=####################
+     #................P.#
+     #...........########
+     ######.............a
+     #g....#####........#
+     #..........s.......#
+     #..#.......####....#
+     #....s.............#
+     #...##.........f...#
+     #........@.....#####
+     #..f...............#
+     ######...........s.#
+     #g..............####
+     #.......@@@@.......#
+     #...f...........f..#
+     ######...##....#####
+     #..................a
+     #.......####.......#
+     #.P...........s....a
+     ####################
+[#]
+tipo=muro
+fondo=coordenadas
+pared=si
+bloqueo=si
+daño=no
+
+[.]
+tipo=fondo
+fondo=coor
+pared=no
+bloqueo=no
+daño=no
+
+[s]
+tipo=sierra
+fondo=coor*
+pared=no
+bloque=no
+daño=si
+
+[@]
+tipo=muro movimiento
+fondo=coor
+pared=si
+bloqueo=si
+daño=no
+
+[a]
+tipo=muro flecha
+fondo=coor
+pared=si
+bloqueo=si
+daño=si
+
+[g]
+tipo=guardian
+fondo=coor
+pared=no
+bloqueo=si
+daño=si
+
+[P]
+tipo=puerta
+fondo=coor
+pared=no
+bloqueo=no
+daño=no
+
+[f]
+tipo=fuego
+fondo=coor
+pared=no
+bloqueo=no
+daño=si
