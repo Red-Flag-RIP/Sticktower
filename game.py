@@ -121,6 +121,13 @@ class level1(level):
 	gpos= [ [36,height-36*11],
 		[36,height-36*24]
 	      ]
+	
+	fpos= [ [36*4,height-36*7+18],[36*4+18,height-36*7+18],
+		[36*17,height-36*7+18],[36*17+18,height-36*7+18],
+		[36*3,height-36*13+18],[36*3+18,height-36*13+18],
+		[36*15,height-36*18+18],[36*15+18,height-36*18+18]
+	      ]
+		
 			
 	def __init__(self):
 		level.__init__(self)
@@ -151,6 +158,10 @@ class level1(level):
 			guard=guardian(g)
 			guard.level=self
 			self.enemies_list.add(guard)
+		for f in self.fpos:
+			flame=fire(f)
+			flame.level=self
+			self.enemies_list.add(flame)
 
 class background(pygame.sprite.Sprite):
 	def __init__(self,imagen):
