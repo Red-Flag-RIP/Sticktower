@@ -202,9 +202,9 @@ if __name__ == '__main__':
 	for b in bpos:
 		ls_balas_nivel1.add(gbala(b,[b[0]+width,b[1]+36*12]))
 	
-	boss_b=boss_bala()
+	boss_b=gbala([36*11-18-10,height-36*28],[0,height-36*20])
+	boss_b.direccion=1
 	ls_balas_nivel1.add(boss_b)
-	boss_b.pindex=[0,-582]
 	#creando niveles
 	level_list=[]
 	level_list.append(level1())
@@ -261,9 +261,9 @@ if __name__ == '__main__':
 			actual_level.move_back_y(d)
 			back.rect.y+=d
 			blevel1.rect.y+=d
-			boss_b.rect.y+=d
 			for b in ls_balas_nivel1:
 				b.d=d
+			boss_b.d=d
 		#bala del jefe persigue	
 
 
@@ -279,6 +279,7 @@ if __name__ == '__main__':
 		actual_level.draw(window)
 		ls_balas_nivel1.draw(window)
 		window.blit(player.image,(player.rect.x,player.rect.y))
+		window.blit(boss_b.image,(boss_b.rect.x,boss_b.rect.y))
 		clock.tick(60)
 		pygame.display.flip()			
 					

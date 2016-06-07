@@ -58,7 +58,7 @@ class guardian(pygame.sprite.Sprite):
 class fire(pygame.sprite.Sprite):
 	level=None
 	contador=0
-	itr=7
+	itr=15
 	def __init__(self,p):
 		pygame.sprite.Sprite.__init__(self)
 		self.image=pygame.image.load('images/flames1.png')
@@ -92,16 +92,7 @@ class boss1(pygame.sprite.Sprite):
 		self.rect.x=36*11
 		self.rect.y=-582+36*3
 		self.pi=[self.rect.x,self.rect.y]
-	def update(self):
-		if self.recarga>0 and self.rect.x==self.pi[0]:
-			self.shot=True
-			self.recarga-=1
-		if self.recarga<=0:
-			self.rect.x+=2.5
-		if self.rect.x>=self.pi[0]+36*4:
-			self.recarga+=1
-		if self.recarga==60:
-			self.rect.x-=2.5
+	
 			
 			
 
@@ -153,11 +144,16 @@ def brensenham_bala(p1,p2,c):
 	return (x,y)
 
 class gbala(pygame.sprite.Sprite):
+	direccion=0
 	level=None
 	p1=[]
 	p2=[]
 	contador=0
+	contador2=0
+	cambio=0
 	d=0
+	wait=0
+	timer=0
 	def __init__(self,posa,posb):
 		pygame.sprite.Sprite.__init__(self)
 		self.image=pygame.image.load('images/g_bala.png')
@@ -168,65 +164,67 @@ class gbala(pygame.sprite.Sprite):
 		self.pf=[posb[0],posb[1]]
 	
 	def update(self):
-		if self.rect.x<=width:
-			self.p1=[self.rect.x,self.rect.y+self.d]
-			self.pf[1]+=self.d
-			self.pi[1]+=self.d
-			self.p2=[self.pf[0],self.pf[1]]
-			np=brensenham_bala(self.p1,self.p2,self.contador)
-			self.rect.x=np[0]
-			self.rect.y=np[1]
-			self.contador+=1
-			self.d=0
-		else:
-			self.contador=0
-			self.rect.x=self.pi[0]
-			self.rect.y=self.pi[1]+self.d
-			self.d=0
-
-class boss_bala(pygame.sprite.Sprite):
-	contador=0
-	pindex=[]
-	cambio=0
-	shot=0
-	def __init__(self):
-		pygame.sprite.Sprite.__init__(self)
-		self.image=pygame.image.load('images/bbala.png')
-		self.rect=self.image.get_rect()
-		self.rect.x=36*10+18
-		self.rect.y=-582+36*3+18
-	
-	def update(self):
-		if self.rect.x>=width/2-36:
-			self.rect.x-=2
-			self.shot+=1
-		else:
-			self.cambio=1
-		if self.cambio==1:
-			self.pindex=[0,36*8]
-			np=brensenham_bala([self.rect.x,self.rect.y],self.pindex,self.contador)
-			self.rect.x=np[0]
-			self.rect.y=np[1]
-			self.shot+=1
-			self.cambio=2
-		if self.cambio==2:
-			self.pindex=[36*10,height]
-			np=brensenham_bala([self.rect.x,self.rect.y],self.pindex,self.contador)
-			self.rect.x=np[0]
-			self.rect.y=np[1]			
-			self.shot+=1
-			self.cambio=3
-		if self.cambio==3:
-			self.pindex=[0,36*3]
-			np=brensenham_bala([self.rect.x,self.rect.y],self.pindex,self.contador)
-			self.rect.x=np[0]
-			self.rect.y=np[1]			
-			self.shot+=1
-			self.cambio=0
-		if self.shot>=200:
-			self.rect.x=36*10+18
-			self.shot=0
-		
+		if self.direccion==0:
+			if self.rect.x<=width:
+				self.p1=[self.rect.x,self.rect.y+self.d]
+				self.pf[1]+=self.d
+				self.pi[1]+=self.d
+				self.p2=[self.pf[0],self.pf[1]]
+				np=brensenham_bala(self.p1,self.p2,self.contador)
+				self.rect.x=np[0]
+				self.rect.y=np[1]
+				self.contador+=1
+				self.d=0
+			else:
+				self.contador=0
+				self.rect.x=self.pi[0]
+				self.rect.y=self.pi[1]+self.d
+				self.d=0
+		if self.direccion==1:
+			self.timer+=1
+			if self.timer>=0:
+				self.pi[1]+=self.d
+				self.pf[1]+=self.d
+				if self.wait<=0:
+					self.image=pygame.image.load('images/bbala.png')
+				if self.wait>=50:
+					self.image=pygame.image.load('images/bbala2.png')
+					self.wait=0
+				if self.rect.x>=36 and self.cambio==0:
+					if self.rect.x>=width/2-36:
+						self.rect.x-=4
+						self.rect.y+=self.d
+					else:
+						self.p1=[self.rect.x,self.rect.y+self.d]
+						self.p2=[self.pf[0],self.pf[1]]
+						np=brensenham_bala(self.p1,self.p2,self.contador2)
+						self.rect.x=np[0]
+						self.rect.y=np[1]
+					self.contador2+=1
+					self.d=0
+				if self.rect.y-self.pi[1]<=120 and self.cambio==1:
+					if self.rect.x>=width/2-36:
+						self.rect.x-=4
+					else:
+						self.rect.y+=2
+					self.rect.y+=self.d
+					self.d=0 
+				if self.rect.x>=36 and self.cambio==2:
+					self.rect.y+=self.d
+					self.rect.x-=4
+					self.d=0 								
+				if self.rect.x<=36 or self.rect.y-self.pi[1]>=120:
+					self.contador2=0
+					self.rect.x=self.pi[0]
+					self.rect.y=self.pi[1]+self.d
+					self.d=0
+					if self.cambio<2:
+						self.cambio+=1
+					else:
+						self.cambio=0
+				self.wait+=1
+			if self.timer>=60:
+				self.timer=0
 
 
 		
