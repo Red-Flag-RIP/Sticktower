@@ -180,7 +180,10 @@ if __name__ == '__main__':
 	bpos= [ [36,height-36*11],
 		[36,height-36*24]
 	      ]
-
+	E_door=pygame.image.load('images/doorclosed.png')
+	E_door_pos=[54,height-51]
+	S_door=pygame.image.load('images/dooropen.png')
+	S_door_pos=[width-36*4,-height+36*2-14]
 	pygame.init()
 	pygame.display.set_caption("Stick tower")
 
@@ -224,10 +227,13 @@ if __name__ == '__main__':
 	
 
 	#dibujos
+	window.blit(E_door,E_door_pos)
+	window.blit(S_door,S_door_pos)
 	active_ls.draw(window)
 	window.blit(player.image,(player.rect.x,player.rect.y))
 	actual_level.draw(window)
 	ls_balas_nivel1.draw(window)
+	
 	
 	speed=4
 
@@ -264,6 +270,8 @@ if __name__ == '__main__':
 			for b in ls_balas_nivel1:
 				b.d=d
 			boss_b.d=d
+		else:
+			d=0
 		#bala del jefe persigue	
 
 
@@ -277,6 +285,10 @@ if __name__ == '__main__':
 		ls_balas_nivel1.update()
 		active_ls.draw(window)
 		actual_level.draw(window)
+		E_door_pos[1]+=d
+		S_door_pos[1]+=d
+		window.blit(E_door,E_door_pos)
+		window.blit(S_door,S_door_pos)
 		ls_balas_nivel1.draw(window)
 		window.blit(player.image,(player.rect.x,player.rect.y))
 		window.blit(boss_b.image,(boss_b.rect.x,boss_b.rect.y))
