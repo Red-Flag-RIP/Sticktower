@@ -53,5 +53,3 @@ class guardian(pygame.sprite.Sprite):
 		self.rect=self.image.get_rect()
 		self.rect.x=p[0]
 		self.rect.y=p[1]
-
-

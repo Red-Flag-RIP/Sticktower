@@ -36,7 +36,7 @@ class level(object):
 	mls=[[36,36*30,0,-height],[36*20,36,0,-height],[36,36*30,36*19,-height],[36*20,36,0,36*29]]
 	
 	def __init__(self):
-		self.image=pygame.image.load("nivel1map.png")
+		self.image=pygame.image.load("images/nivel1map.png")
 		self.rect=self.image.get_rect()
 		self.rect.x=0
 		self.rect.y=-height
@@ -184,7 +184,7 @@ if __name__ == '__main__':
 	#player=Player([36,36])
 
 	#FONDO
-	back=background('nivel1map.png')
+	back=background('images/nivel1map.png')
 
 	#enemigos
 	
