@@ -36,7 +36,7 @@ class plataform(pygame.sprite.Sprite):
 	def __init__(self,p):
 		pygame.sprite.Sprite.__init__(self)
 		#apariencia del mapa
-		self.image=pygame.image.load('plataform.png')
+		self.image=pygame.image.load('images/plataform.png')
 		self.rect=self.image.get_rect()
 		self.rect.x=p[0]
 		self.rect.y=p[1]

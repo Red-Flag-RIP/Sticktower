@@ -12,7 +12,7 @@ class Player(pygame.sprite.Sprite):
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
 		#apariencia del jugador
-		self.image=pygame.image.load('player_startright.png').convert_alpha()
+		self.image=pygame.image.load('images/player_startright.png').convert_alpha()
 		#self.image=pygame.Surface(imagen)
 		self.rect=self.image.get_rect()
 		self.rect.x=48
@@ -21,55 +21,55 @@ class Player(pygame.sprite.Sprite):
 	def look(self):
 		if self.movx > 0:
 			if self.contador<self.itr:
-				self.image=pygame.image.load('player_run_right1.png').convert_alpha()
+				self.image=pygame.image.load('images/player_run_right1.png').convert_alpha()
 				self.contador+=1
 			if self.contador>=self.itr and self.contador <=self.itr*2:
-				self.image=pygame.image.load('player_run_right2.png').convert_alpha()
+				self.image=pygame.image.load('images/player_run_right2.png').convert_alpha()
 				self.contador+=1
 			if self.contador>=self.itr*2 and self.contador <=self.itr*3:
-				self.image=pygame.image.load('player_run_right3.png').convert_alpha()
+				self.image=pygame.image.load('images/player_run_right3.png').convert_alpha()
 				self.contador+=1
 			if self.contador>=self.itr*3 and self.contador<=self.itr*4:
-				self.image=pygame.image.load('player_run_right4.png').convert_alpha()
+				self.image=pygame.image.load('images/player_run_right4.png').convert_alpha()
 				self.contador+=1
 			if self.contador>=self.itr*4 and self.contador<=self.itr*5:
-				self.image=pygame.image.load('player_run_right4.png').convert_alpha()
+				self.image=pygame.image.load('images/player_run_right4.png').convert_alpha()
 				self.contador+=1
 			if self.contador>=self.itr*5 and self.contador<=self.itr*6:
-				self.image=pygame.image.load('player_run_right5.png').convert_alpha()
+				self.image=pygame.image.load('images/player_run_right5.png').convert_alpha()
 				self.contador+=1
 			if self.contador==self.itr*6:
 				self.contador=0
-				self.image=pygame.image.load('player_run_right1.png').convert_alpha()
+				self.image=pygame.image.load('images/player_run_right1.png').convert_alpha()
 		if self.movx==0:
 			self.contador=0
-			self.image=pygame.image.load('player_startright.png').convert_alpha()
+			self.image=pygame.image.load('images/player_startright.png').convert_alpha()
 		
 		if self.movx < 0:
 			if self.contador<self.itr:
-				self.image=pygame.image.load('player_run_left1.png').convert_alpha()
+				self.image=pygame.image.load('images/player_run_left1.png').convert_alpha()
 				self.contador+=1
 			if self.contador>=self.itr*1 and self.contador <=self.itr*2:
-				self.image=pygame.image.load('player_run_left2.png').convert_alpha()
+				self.image=pygame.image.load('images/player_run_left2.png').convert_alpha()
 				self.contador+=1
 			if self.contador>=self.itr*2 and self.contador <=self.itr*3:
-				self.image=pygame.image.load('player_run_left3.png').convert_alpha()
+				self.image=pygame.image.load('images/player_run_left3.png').convert_alpha()
 				self.contador+=1
 			if self.contador>=self.itr*3 and self.contador<=self.itr*4:
-				self.image=pygame.image.load('player_run_left4.png').convert_alpha()
+				self.image=pygame.image.load('images/player_run_left4.png').convert_alpha()
 				self.contador+=1
 			if self.contador>=self.itr*4 and self.contador<=self.itr*5:
-				self.image=pygame.image.load('player_run_left4.png').convert_alpha()
+				self.image=pygame.image.load('images/player_run_left4.png').convert_alpha()
 				self.contador+=1
 			if self.contador>=self.itr*5 and self.contador<=self.itr*6:
-				self.image=pygame.image.load('player_run_left5.png').convert_alpha()
+				self.image=pygame.image.load('images/player_run_left5.png').convert_alpha()
 				self.contador+=1
 			if self.contador==self.itr*6:
 				self.contador=0
-				self.image=pygame.image.load('player_run_left1.png').convert_alpha()
+				self.image=pygame.image.load('images/player_run_left1.png').convert_alpha()
 		if self.movx==0:
 			self.contador=0
-			self.image=pygame.image.load('player_startright.png').convert_alpha()
+			self.image=pygame.image.load('images/player_startright.png').convert_alpha()
 
 	def gravity(self):
 		if self.movy==0:
