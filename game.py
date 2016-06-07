@@ -127,6 +127,7 @@ class level1(level):
 		[36*3,height-36*13+18],[36*3+18,height-36*13+18],
 		[36*15,height-36*18+18],[36*15+18,height-36*18+18]
 	      ]
+	
 		
 			
 	def __init__(self):
@@ -162,6 +163,7 @@ class level1(level):
 			flame=fire(f)
 			flame.level=self
 			self.enemies_list.add(flame)
+		
 
 class background(pygame.sprite.Sprite):
 	def __init__(self,imagen):
@@ -173,6 +175,10 @@ class background(pygame.sprite.Sprite):
 
 
 if __name__ == '__main__':
+	bpos= [ [36,height-36*11],
+		[36,height-36*24]
+	      ]
+
 	pygame.init()
 	pygame.display.set_caption("Stick tower")
 
@@ -187,8 +193,16 @@ if __name__ == '__main__':
 	back=background('images/nivel1map.png')
 
 	#enemigos
-	
+	blevel1=boss1()
 
+	#balas
+	ls_balas_nivel1=pygame.sprite.Group()
+	for b in bpos:
+		ls_balas_nivel1.add(gbala(b,[b[0]+width,b[1]+36*12]))
+	
+	boss_b=boss_bala()
+	ls_balas_nivel1.add(boss_b)
+	boss_b.pindex=[0,-582]
 	#creando niveles
 	level_list=[]
 	level_list.append(level1())
@@ -199,17 +213,19 @@ if __name__ == '__main__':
 
 	#nivel del jugador
 	player.level=actual_level
-
+	blevel1.level=actual_level
 	#listas
 	active_ls=pygame.sprite.Group()
 	active_ls.add(back)
 	active_ls.add(player)
+	active_ls.add(blevel1)
 	
 
 	#dibujos
 	active_ls.draw(window)
 	window.blit(player.image,(player.rect.x,player.rect.y))
 	actual_level.draw(window)
+	ls_balas_nivel1.draw(window)
 	
 	speed=4
 
@@ -236,18 +252,30 @@ if __name__ == '__main__':
 				if event.key==pygame.K_LEFT:
 					player.movx=0
 	
+		#MOVER OBJETOS CON EL FONDO
 		if player.rect.y <= height/8:
 			d=6
 			player.rect.y+=d
 			actual_level.move_back_y(d)
 			back.rect.y+=d
+			blevel1.rect.y+=d
+			boss_b.rect.y+=d
+			for b in ls_balas_nivel1:
+				b.d=d
+		#bala del jefe persigue	
+
+
+		
+		#Muere si toca el fondo	
 		if player.rect.y == height-player.rect.height and d!=0:
 			print 'You lose'	
 		
 		actual_level.update()
 		active_ls.update()
+		ls_balas_nivel1.update()
 		active_ls.draw(window)
 		actual_level.draw(window)
+		ls_balas_nivel1.draw(window)
 		window.blit(player.image,(player.rect.x,player.rect.y))
 		clock.tick(60)
 		pygame.display.flip()			

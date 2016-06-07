@@ -130,5 +130,4 @@ class Player(pygame.sprite.Sprite):
 			elif self.movy < 0:
 				self.rect.top = muro.rect.bottom
 				
-			self.movy=0
-
+			self.movy=0	
