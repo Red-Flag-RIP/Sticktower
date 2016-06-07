@@ -1,4 +1,4 @@
-# Proyectos Finales de Computacion Grafica
+# Proyecto Final de Computacion Grafica
  UN TEXTO RAPIDITO DE QUE HACE ESE JUEGO, HISTORIA, POR QUE EL JUEGO ETC.
 
 
