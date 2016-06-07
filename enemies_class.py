@@ -54,27 +54,4 @@ class guardian(pygame.sprite.Sprite):
 		self.rect.x=p[0]
 		self.rect.y=p[1]
 
-class fire(pygame.sprite.Sprite):
-	level=None
-	contador=0
-	itr=7
-	def __init__(self,p):
-		pygame.sprite.Sprite.__init__(self)
-		self.image=pygame.image.load('images/flames1.png')
-		self.rect=self.image.get_rect()
-		self.rect.x=p[0]
-		self.rect.y=p[1]
-	def update(self):
-		if self.contador<self.itr:
-				self.image=pygame.image.load('images/flames2.png').convert_alpha()
-				self.contador+=1
-		if self.contador>=self.itr and self.contador <=self.itr*2:
-				self.image=pygame.image.load('images/flames3.png').convert_alpha()
-				self.contador+=1
-		if self.contador>=self.itr*2 and self.contador <=self.itr*3:
-				self.image=pygame.image.load('images/flames4.png').convert_alpha()
-				self.contador+=1
-		if self.contador==self.itr*3: 
-				self.image=pygame.image.load('images/flames1.png').convert_alpha()
-				self.contador=0
-	
+
