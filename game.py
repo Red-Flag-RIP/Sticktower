@@ -18,7 +18,9 @@ height=540
 
 window=pygame.display.set_mode([width,height])
 
-
+gameIcon = pygame.image.load('images/ico.png') #Added Game Icon to the Window . you can replace this by an image that fits 32x32
+                                               #they support same as pygame.image.load see http://www.pygame.org/docs/ref/image.html#pygame.image.load
+pygame.display.set_icon(gameIcon)
 
 class level(object):
 	#move back
