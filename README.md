@@ -39,5 +39,5 @@ se hara merge.
 
 Licencia
 ----
-Gpl
+Gpl 3.0
 
