@@ -49,5 +49,5 @@ class plataform(pygame.sprite.Sprite):
 				self.d=3
 			if self.rect.right>=line.rect.right:
 				self.d=-3
-		
+
 		

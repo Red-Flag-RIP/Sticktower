@@ -6,6 +6,7 @@ width=36*20
 height=540
 
 class saw(pygame.sprite.Sprite):
+	tipe=1
 	level=None
 	d=-2
 	contador=0
@@ -33,6 +34,7 @@ class saw(pygame.sprite.Sprite):
 			self.contador=0
 
 class arrow(pygame.sprite.Sprite):
+	tipe=2
 	level=None
 	d=-4
 	def __init__(self,p):
@@ -48,6 +50,7 @@ class arrow(pygame.sprite.Sprite):
 			self.rect.x=self.xin
 
 class guardian(pygame.sprite.Sprite):
+	tipe=3
 	level=None
 	def __init__(self,p):
 		pygame.sprite.Sprite.__init__(self)
@@ -56,6 +59,7 @@ class guardian(pygame.sprite.Sprite):
 		self.rect.x=p[0]
 		self.rect.y=p[1]
 class fire(pygame.sprite.Sprite):
+	tipe=4
 	level=None
 	contador=0
 	itr=15
@@ -80,11 +84,13 @@ class fire(pygame.sprite.Sprite):
 				self.contador=0
 
 class boss1(pygame.sprite.Sprite):
+	tipe=6
 	level=None
 	contador=0
 	moving=0
 	shot=False
 	recarga=60
+	dead=0
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
 		self.image=pygame.image.load('images/jefe1.png')
@@ -93,7 +99,10 @@ class boss1(pygame.sprite.Sprite):
 		self.rect.y=-582+36*3
 		self.pi=[self.rect.x,self.rect.y]
 	
-			
+	def update(self):
+		collition=pygame.sprite.spritecollide(self,self.level.object_list,False)
+		for obj in collition:
+			self.dead=1	
 			
 
 def brensenham_bala(p1,p2,c):
@@ -144,6 +153,7 @@ def brensenham_bala(p1,p2,c):
 	return (x,y)
 
 class gbala(pygame.sprite.Sprite):
+	tipe=5
 	direccion=0
 	level=None
 	p1=[]

@@ -3,10 +3,10 @@ from pygame.locals import *
 from player_class import *
 from enemies_class import *
 from plataform_class import *
-
+from funciones import *
 #colors
 white=(255,255,255)
-
+black=(0,0,0)
 #global const
 
 real_width=720
@@ -18,15 +18,15 @@ height=540
 
 window=pygame.display.set_mode([width,height])
 
-gameIcon = pygame.image.load('images/ico.png') #Added Game Icon to the Window . you can replace this by an image that fits 32x32
-                                               #they support same as pygame.image.load see http://www.pygame.org/docs/ref/image.html#pygame.image.load
+gameIcon = pygame.image.load('images/ico.png') 
+
 pygame.display.set_icon(gameIcon)
 
 class level(object):
 	#move back
 	move_y=0
 	move_x=0
-	
+	player=None
 	wall=None
 	enemies_list=None
 	object_list=None
@@ -70,6 +70,8 @@ class level(object):
 		self.move_y=0
 		for b in self.visible_objects:
 			b.rect.y+=d
+		for o in self.object_list:
+			o.rect.y+=d
 	def draw(self,window):
 		#window.fill(white)
 		#self.wall.draw(window)
@@ -104,7 +106,7 @@ class level1(level):
 		[36*3,36*16,height-36*11-18],
 		[36*17,36+18,height-36*14-18],
 		[36*1,36*5,height-36*18-18],
-		[36*3,36*10+18,height-36*21-18]
+		[36*2,36*10+18,height-36*21-18]
 		]
 	saw_position=[  [36*16,height-36],
 			[36*17-18,height-36*12],
@@ -115,8 +117,7 @@ class level1(level):
 				[36*3,height-36*15]
 			   ]
 	
-	sarrow= [       [36*19-25,height-36+18-3.5],
-			[36*19-25,height-36*4+18-3.5],
+	sarrow= [       [36*19-25,height-36*4+18-3.5],
 			[36*19-25,height-36*25+18-3.5]
 		]
 
@@ -165,6 +166,8 @@ class level1(level):
 			flame=fire(f)
 			flame.level=self
 			self.enemies_list.add(flame)
+		roca=proyectil('images/rock.png',[36*3,-height+36*4+8])
+		self.object_list.add(roca)
 		
 
 class background(pygame.sprite.Sprite):
@@ -184,6 +187,9 @@ if __name__ == '__main__':
 	E_door_pos=[54,height-51]
 	S_door=pygame.image.load('images/dooropen.png')
 	S_door_pos=[width-36*4,-height+36*2-14]
+	screen=pygame.image.load('images/Screen.png')
+	explosion=pygame.image.load('images/explosion.png')
+	m_ex=0
 	pygame.init()
 	pygame.display.set_caption("Stick tower")
 
@@ -199,7 +205,8 @@ if __name__ == '__main__':
 
 	#enemigos
 	blevel1=boss1()
-
+	bossls=pygame.sprite.Group()
+	bossls.add(blevel1)
 	#balas
 	ls_balas_nivel1=pygame.sprite.Group()
 	for b in bpos:
@@ -217,6 +224,9 @@ if __name__ == '__main__':
 	actual_level=level_list[level_position]
 
 	#nivel del jugador
+	actual_level.player=player
+	for obj in actual_level.object_list:
+		obj.player=player
 	player.level=actual_level
 	blevel1.level=actual_level
 	#listas
@@ -238,7 +248,6 @@ if __name__ == '__main__':
 	speed=4
 
 	end=False
-
 	clock=pygame.time.Clock()
 	pygame.key.set_repeat(10,50)
 	while not end:
@@ -252,8 +261,16 @@ if __name__ == '__main__':
 					player.movx=-speed
 				if event.key==pygame.K_SPACE:
 					player.jump()
-
-
+				if event.key==pygame.K_UP:
+					player.climb()
+				if event.key==pygame.K_z:
+					for obj in actual_level.object_list:
+						if obj.grab==1:
+							obj.disparo=1
+				if event.key == pygame.K_ESCAPE:
+						pause = True
+						window.fill(white)
+						paused(pause)
 			elif event.type==pygame.KEYUP:
 				if event.key==pygame.K_RIGHT:
 					player.movx=0
@@ -261,7 +278,7 @@ if __name__ == '__main__':
 					player.movx=0
 	
 		#MOVER OBJETOS CON EL FONDO
-		if player.rect.y <= height/8:
+		if player.rect.y <= height/8:                              
 			d=6
 			player.rect.y+=d
 			actual_level.move_back_y(d)
@@ -272,14 +289,40 @@ if __name__ == '__main__':
 			boss_b.d=d
 		else:
 			d=0
-		#bala del jefe persigue	
-
+		
+		print player.hp
+		#interactuar con el hp del jugador
+		if player.hp<=0:
+			window.blit(screen,[-10,-10])
+			dead()
 
 		
 		#Muere si toca el fondo	
 		if player.rect.y == height-player.rect.height and d!=0:
-			print 'You lose'	
-		
+			player.hp=0	
+
+		balas_collition=pygame.sprite.spritecollide(player,ls_balas_nivel1,False)
+		for bala in balas_collition:
+			if bala.direccion==0:
+					player.hp-=20
+					bala.rect.x=bala.pi[0]
+					bala.rect.y=bala.pi[1]
+			if bala.direccion==1:
+					player.hp-=50
+					bala.imagen=explosion
+					bala.rect.x=bala.pi[0]
+					bala.rect.y=bala.pi[1]
+		collide_boss=pygame.sprite.spritecollide(player,bossls,False)
+		for boss in collide_boss:
+			
+			player.hp-=0
+			
+
+		if blevel1.dead==1:
+			ls_balas_nivel1.remove(boss_b)
+			active_ls.remove(blevel1)
+
+
 		actual_level.update()
 		active_ls.update()
 		ls_balas_nivel1.update()

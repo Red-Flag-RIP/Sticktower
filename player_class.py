@@ -5,10 +5,15 @@ from game import *
 class Player(pygame.sprite.Sprite):
 	image=None
 	level=None
+	rock=None
 	movx=0
 	movy=0
 	contador=-1
 	itr=7
+	hp=100
+	direccion=0
+	down=1
+	disparo=0
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
 		#apariencia del jugador
@@ -20,6 +25,7 @@ class Player(pygame.sprite.Sprite):
 	
 	def look(self):
 		if self.movx > 0:
+			self.direccion=0
 			if self.contador<self.itr:
 				self.image=pygame.image.load('images/player_run_right1.png').convert_alpha()
 				self.contador+=1
@@ -43,9 +49,12 @@ class Player(pygame.sprite.Sprite):
 				self.image=pygame.image.load('images/player_run_right1.png').convert_alpha()
 		if self.movx==0:
 			self.contador=0
-			self.image=pygame.image.load('images/player_startright.png').convert_alpha()
-		
+			if self.direccion==0:
+				self.image=pygame.image.load('images/player_startright.png').convert_alpha()
+			if self.direccion==1:
+				self.image=pygame.image.load('images/player_startleft.png').convert_alpha()
 		if self.movx < 0:
+			self.direccion=1
 			if self.contador<self.itr:
 				self.image=pygame.image.load('images/player_run_left1.png').convert_alpha()
 				self.contador+=1
@@ -69,8 +78,12 @@ class Player(pygame.sprite.Sprite):
 				self.image=pygame.image.load('images/player_run_left1.png').convert_alpha()
 		if self.movx==0:
 			self.contador=0
-			self.image=pygame.image.load('images/player_startright.png').convert_alpha()
+			if self.direccion==0:
+				self.image=pygame.image.load('images/player_startright.png').convert_alpha()
+			if self.direccion==1:
+				self.image=pygame.image.load('images/player_startleft.png').convert_alpha()
 
+			
 	def gravity(self):
 		if self.movy==0:
 			self.movy=1
@@ -87,12 +100,25 @@ class Player(pygame.sprite.Sprite):
         
 		# Si es posible saltar, aumentamos velocidad hacia arriba
 		if len(collition_ls) > 0 or self.rect.bottom >= height:
-			self.movy = -12
+			self.movy = -10
 
 		#plataforma en movimiento
 		if len(coll_movls) > 0 or self.rect.bottom >= height:
-			self.movy = -12
-			
+			self.movy = -10
+	def climb(self):
+		self.rect.y += 2
+		collition_ls=pygame.sprite.spritecollide(self,self.level.wall,False)
+		coll_movls=pygame.sprite.spritecollide(self,self.level.plataform_list,False)
+		self.rect.y -= 2
+        
+		# Si es posible saltar, aumentamos velocidad hacia arriba
+		if len(collition_ls) > 0 or self.rect.bottom >= height:
+			self.movy = -6
+
+		#plataforma en movimiento
+		if len(coll_movls) > 0 or self.rect.bottom >= height:
+			self.movy = -6
+
 	def update(self):
 		self.look()
 		self.gravity()
@@ -131,3 +157,52 @@ class Player(pygame.sprite.Sprite):
 				self.rect.top = muro.rect.bottom
 				
 			self.movy=0	
+	
+		enemies_collition=pygame.sprite.spritecollide(self,self.level.enemies_list,False)
+		for enemy in enemies_collition:
+			if enemy.tipe==1:
+				self.hp=0
+				self.image=pygame.image.load('images/dead_tipe1.png')
+				self.rect.x=self.rect.x+18
+				self.rect.y=self.rect.y+18
+			if enemy.tipe==2:
+				self.hp=0
+				self.image=pygame.image.load('images/dead_tipe2.png')
+				self.rect.x=self.rect.x+30
+				self.rect.y=self.rect.y-7
+			if enemy.tipe==3:
+				self.hp=0
+				self.image=pygame.image.load('images/dead_tipe3.png')
+			if enemy.tipe==4:
+				self.hp-=1
+		
+		grab_object=pygame.sprite.spritecollide(self,self.level.object_list,False)
+		for obj in grab_object:
+			obj.grab=1		
+		
+			
+
+		
+class proyectil(pygame.sprite.Sprite):
+	player=None
+	tipe=1
+	def __init__(self, imagen,posa):
+		pygame.sprite.Sprite.__init__(self)
+		self.image=pygame.image.load(imagen).convert_alpha()
+		self.rect=self.image.get_rect()
+		self.direccion=0	
+		self.rect.x=posa[0]
+		self.rect.y=posa[1]+15
+		self.disparo=0
+		self.grab=0
+	def update(self):
+		if self.disparo==1:
+			self.rect.x+=5
+			self.grab=0
+			if self.rect.x>=width:
+				self.grab=1
+				self.disparo=0
+		if self.grab==1:
+			self.rect.x=self.player.rect.x+33
+			self.rect.y=self.player.rect.y+18
+		
