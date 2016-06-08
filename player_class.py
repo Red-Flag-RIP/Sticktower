@@ -5,7 +5,7 @@ from game import *
 class Player(pygame.sprite.Sprite):
 	image=None
 	level=None
-	rock=None
+	objeto=0
 	movx=0
 	movy=0
 	contador=-1
@@ -161,24 +161,30 @@ class Player(pygame.sprite.Sprite):
 		enemies_collition=pygame.sprite.spritecollide(self,self.level.enemies_list,False)
 		for enemy in enemies_collition:
 			if enemy.tipe==1:
-				self.hp=0
-				self.image=pygame.image.load('images/dead_tipe1.png')
-				self.rect.x=self.rect.x+18
-				self.rect.y=self.rect.y+18
+				if self.objeto != 3:
+					self.hp=0
+					self.image=pygame.image.load('images/dead_tipe1.png')
+					self.rect.x=self.rect.x+18
+					self.rect.y=self.rect.y+18
 			if enemy.tipe==2:
-				self.hp=0
-				self.image=pygame.image.load('images/dead_tipe2.png')
-				self.rect.x=self.rect.x+30
-				self.rect.y=self.rect.y-7
+				if self.objeto <=1:
+					self.hp=0
+					self.image=pygame.image.load('images/dead_tipe2.png')
+					self.rect.x=self.rect.x+30
+					self.rect.y=self.rect.y-7
 			if enemy.tipe==3:
-				self.hp=0
-				self.image=pygame.image.load('images/dead_tipe3.png')
+				if self.objeto != 3:
+					self.hp=0
+					self.image=pygame.image.load('images/dead_tipe3.png')
 			if enemy.tipe==4:
 				self.hp-=1
 		
 		grab_object=pygame.sprite.spritecollide(self,self.level.object_list,False)
 		for obj in grab_object:
-			obj.grab=1		
+			obj.grab=1	
+			self.objeto=obj.tipe
+			if self.direccion==1:
+				obj.direccion==1	
 		
 			
 
@@ -203,6 +209,77 @@ class proyectil(pygame.sprite.Sprite):
 				self.grab=1
 				self.disparo=0
 		if self.grab==1:
-			self.rect.x=self.player.rect.x+33
-			self.rect.y=self.player.rect.y+18
+			if self.direccion==0:
+				self.rect.x=self.player.rect.x+33
+				self.rect.y=self.player.rect.y+18
+			if self.direccion==1:
+				self.rect.x=self.player.rect.x-33
+				self.rect.y=self.player.rect.y+18
+
+class shield(pygame.sprite.Sprite):
+	player=None
+	tipe=2
+	def __init__(self, imagen,posa):
+		pygame.sprite.Sprite.__init__(self)
+		self.image=pygame.image.load(imagen).convert_alpha()
+		self.rect=self.image.get_rect()
+		self.direccion=0	
+		self.rect.x=posa[0]
+		self.rect.y=posa[1]+15
+		self.grab=0
+		self.disparo=0	
+	def update(self):
 		
+		if self.grab==1:
+			if self.direccion==0:
+				self.rect.x=self.player.rect.x+23
+				self.rect.y=self.player.rect.y+7
+			if self.direccion==1:
+				self.rect.x=self.player.rect.x-23
+				self.rect.y=self.player.rect.y+7
+
+class sword(pygame.sprite.Sprite):
+	player=None
+	tipe=3
+	def __init__(self, imagen,posa):
+		pygame.sprite.Sprite.__init__(self)
+		self.image=pygame.image.load(imagen).convert_alpha()
+		self.rect=self.image.get_rect()
+		self.direccion=0	
+		self.rect.x=posa[0]
+		self.rect.y=posa[1]+15
+		self.grab=0
+		self.disparo=0	
+	def update(self):
+		
+		if self.grab==1:
+			if self.direccion==0:
+				self.rect.x=self.player.rect.x+23
+				self.rect.y=self.player.rect.y+7
+			if self.direccion==1:
+				self.rect.x=self.player.rect.x-23
+				self.rect.y=self.player.rect.y+7
+
+class barra(pygame.sprite.Sprite):
+	player=None
+	def __init__(self):
+		pygame.sprite.Sprite.__init__(self)
+		self.image=pygame.image.load('images/barra1.png').convert_alpha()
+		self.rect=self.image.get_rect()
+		self.rect.x=54
+		self.rect.y=height-46
+	def update(self):
+		self.rect.x=self.player.rect.x+8
+		self.rect.y=self.player.rect.y-9
+		if self.player.hp>=95:
+			self.image=pygame.image.load('images/barra1.png').convert_alpha()
+		if self.player.hp>=80 and self.player.hp <=95:
+			self.image=pygame.image.load('images/barra2.png').convert_alpha()
+		if self.player.hp>=60 and self.player.hp <=80:
+			self.image=pygame.image.load('images/barra3.png').convert_alpha()
+		if self.player.hp>=40 and self.player.hp <=60:
+			self.image=pygame.image.load('images/barra4.png').convert_alpha()
+		if self.player.hp>=1 and self.player.hp <=40:
+			self.image=pygame.image.load('images/barra5.png').convert_alpha()
+		if self.player.hp<=0:
+			self.image=pygame.image.load('images/barra6.png').convert_alpha()

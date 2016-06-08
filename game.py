@@ -56,6 +56,7 @@ class level(object):
 		self.object_list.update()
 		self.plataform_list.update()
 		self.line_list.update()
+		self.visible_objects.update()
 	
 	def move_back_y(self,d):
 		self.move_y=d
@@ -168,7 +169,12 @@ class level1(level):
 			self.enemies_list.add(flame)
 		roca=proyectil('images/rock.png',[36*3,-height+36*4+8])
 		self.object_list.add(roca)
-		
+		escudo=shield('images/shield.png',[36*16,height-36])
+		self.object_list.add(escudo)
+		espada=sword('images/sword.png',[36*4,height-36*19])
+		self.object_list.add(espada)
+		vida=barra()
+		self.visible_objects.add(vida)
 
 class background(pygame.sprite.Sprite):
 	def __init__(self,imagen):
@@ -227,6 +233,8 @@ if __name__ == '__main__':
 	actual_level.player=player
 	for obj in actual_level.object_list:
 		obj.player=player
+	for v in actual_level.visible_objects:
+		v.player=player
 	player.level=actual_level
 	blevel1.level=actual_level
 	#listas
@@ -246,10 +254,19 @@ if __name__ == '__main__':
 	
 	
 	speed=4
+	
+	fuente = pygame.font.Font(None, 36) 
+	con_cuadros = 0
+	tasa_cambio = 60
+	tiempo_ini = 10
+	seglim=0
+
 
 	end=False
 	clock=pygame.time.Clock()
 	pygame.key.set_repeat(10,50)
+
+	
 	while not end:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -276,6 +293,16 @@ if __name__ == '__main__':
 					player.movx=0
 				if event.key==pygame.K_LEFT:
 					player.movx=0
+
+
+		#reloj
+
+		total_segundos = con_cuadros // tasa_cambio
+		minutos = total_segundos // 60
+		segundos = total_segundos % 60
+		tiempo_final = "Tiempo: {0:02}:{1:02}".format(minutos, segundos)
+		texto = fuente.render(tiempo_final, True, black)
+		con_cuadros += 1
 	
 		#MOVER OBJETOS CON EL FONDO
 		if player.rect.y <= height/8:                              
@@ -304,18 +331,20 @@ if __name__ == '__main__':
 		balas_collition=pygame.sprite.spritecollide(player,ls_balas_nivel1,False)
 		for bala in balas_collition:
 			if bala.direccion==0:
+				if player.objeto <=1:
 					player.hp-=20
 					bala.rect.x=bala.pi[0]
 					bala.rect.y=bala.pi[1]
 			if bala.direccion==1:
-					player.hp-=50
-					bala.imagen=explosion
+				if player.objeto <=1:
+					player.hp=0
+					player.imagen=explosion
 					bala.rect.x=bala.pi[0]
 					bala.rect.y=bala.pi[1]
 		collide_boss=pygame.sprite.spritecollide(player,bossls,False)
 		for boss in collide_boss:
-			
-			player.hp-=0
+			if player.objeto!=3:
+				player.hp-=0
 			
 
 		if blevel1.dead==1:
@@ -335,6 +364,7 @@ if __name__ == '__main__':
 		ls_balas_nivel1.draw(window)
 		window.blit(player.image,(player.rect.x,player.rect.y))
 		window.blit(boss_b.image,(boss_b.rect.x,boss_b.rect.y))
+		window.blit(texto, [10, 10])
 		clock.tick(60)
 		pygame.display.flip()			
 					

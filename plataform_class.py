@@ -22,6 +22,7 @@ class visible(pygame.sprite.Sprite):
 		self.rect.y=p[1]
 
 class moving_line(pygame.sprite.Sprite):
+	player=None
 	def __init__(self,w,p):
 		pygame.sprite.Sprite.__init__(self)
 		#apariencia del mapa
