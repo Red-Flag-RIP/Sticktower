@@ -197,7 +197,7 @@ class gbala(pygame.sprite.Sprite):
 				self.pf[1]+=self.d
 				if self.wait<=0:
 					self.image=pygame.image.load('images/bbala.png')
-				if self.wait>=50:
+				if self.wait>=50 and self.wait<=100:
 					self.image=pygame.image.load('images/bbala2.png')
 					self.wait=0
 				if self.rect.x>=36 and self.cambio==0:
@@ -228,6 +228,7 @@ class gbala(pygame.sprite.Sprite):
 					self.rect.x=self.pi[0]
 					self.rect.y=self.pi[1]+self.d
 					self.d=0
+					
 					if self.cambio<2:
 						self.cambio+=1
 					else:

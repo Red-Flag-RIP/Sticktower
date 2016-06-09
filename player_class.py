@@ -14,6 +14,7 @@ class Player(pygame.sprite.Sprite):
 	direccion=0
 	down=1
 	disparo=0
+	exp=0
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
 		#apariencia del jugador
@@ -186,6 +187,8 @@ class Player(pygame.sprite.Sprite):
 			if self.direccion==1:
 				obj.direccion==1	
 		
+		if self.exp>1:
+			self.image=pygame.image.load('images/explosion.png')
 			
 
 		
