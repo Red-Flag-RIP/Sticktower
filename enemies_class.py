@@ -71,16 +71,16 @@ class fire(pygame.sprite.Sprite):
 		self.rect.y=p[1]
 	def update(self):
 		if self.contador<self.itr:
-				self.image=pygame.image.load('images/flames2.png').convert_alpha()
+				self.image=pygame.image.load('images/flames2.png')
 				self.contador+=1
 		if self.contador>=self.itr and self.contador <=self.itr*2:
-				self.image=pygame.image.load('images/flames3.png').convert_alpha()
+				self.image=pygame.image.load('images/flames3.png')
 				self.contador+=1
 		if self.contador>=self.itr*2 and self.contador <=self.itr*3:
-				self.image=pygame.image.load('images/flames4.png').convert_alpha()
+				self.image=pygame.image.load('images/flames4.png')
 				self.contador+=1
 		if self.contador==self.itr*3: 
-				self.image=pygame.image.load('images/flames1.png').convert_alpha()
+				self.image=pygame.image.load('images/flames1.png')
 				self.contador=0
 
 class boss1(pygame.sprite.Sprite):
