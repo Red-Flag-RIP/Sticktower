@@ -250,6 +250,7 @@ class boss2(pygame.sprite.Sprite):
 	itr=7
 	go_back=0
 	tipe=10
+	atack=0
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
 		self.image=pygame.image.load('images/boss2/boss1run.png')	
@@ -259,7 +260,8 @@ class boss2(pygame.sprite.Sprite):
 		self.pi=[self.rect.x,self.rect.y]
 		self.pf=[36*3,self.rect.y]
 	def charging(self):
-		if self.rect.x>=self.pi[0]:
+		if self.rect.x>=self.pi[0] and self.player.rect.x<=36*7:
+			self.atack=0
 			self.charge=1
 		if self.charge==1:
 			self.rect.x-=3
@@ -296,7 +298,24 @@ class boss2(pygame.sprite.Sprite):
 					self.conteo_pasos=0
 			if self.rect.x>=self.pi[0]:
 				self.go_back=0
-
+				self.image=pygame.image.load('images/boss2/boss1run.png').convert_alpha()
+			
+	def atacking(self):
+			if self.rect.x>=self.pi[0] and self.player.rect.x>=36*7 and self.player.rect.y<=36*10:
+				self.atack=1
+			if self.atack==1:
+				if self.conteo_pasos<self.itr:
+					self.image=pygame.image.load('images/boss2/boss1atack.png').convert_alpha()
+					self.conteo_pasos+=1
+				if self.conteo_pasos>=self.itr and self.conteo_pasos <=self.itr*2:
+					self.image=pygame.image.load('images/boss2/boss2atack.png').convert_alpha()
+					self.conteo_pasos+=1
+				if self.conteo_pasos>=self.itr*2 and self.conteo_pasos <=self.itr*3:
+					self.image=pygame.image.load('images/boss2/boss3atack.png').convert_alpha()
+					self.conteo_pasos+=1
+				if self.conteo_pasos==self.itr*3:
+					self.conteo_pasos=0
 	def update(self):
 			self.charging()
 			self.goback()
+			self.atacking()

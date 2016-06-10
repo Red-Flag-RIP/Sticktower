@@ -415,7 +415,8 @@ if __name__ == '__main__':
 			if player.objeto!=3:
 				player.hp-=0
 			
-
+		for w in actual_level.plataform_list:
+			w.player=player
 		if blevel1.dead==1:
 			ls_balas_nivel1.remove(boss_b)
 			active_ls.remove(blevel1)

@@ -34,6 +34,8 @@ class moving_line(pygame.sprite.Sprite):
 class plataform(pygame.sprite.Sprite):
 	level=None
 	d=3
+	player=None
+	on_top=0
 	def __init__(self,p):
 		pygame.sprite.Sprite.__init__(self)
 		#apariencia del mapa
@@ -50,5 +52,9 @@ class plataform(pygame.sprite.Sprite):
 				self.d=3
 			if self.rect.right>=line.rect.right:
 				self.d=-3
-
-		
+		if self.player.rect.bottom==self.rect.top:
+			on_top=1
+		else:
+			on_top=0
+		if on_top==1:
+			self.player.rect.x+=self.d
