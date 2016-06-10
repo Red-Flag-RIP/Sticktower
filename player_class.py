@@ -45,9 +45,11 @@ class Player(pygame.sprite.Sprite):
 			if self.contador>=self.itr*5 and self.contador<=self.itr*6:
 				self.image=pygame.image.load('images/player_run_right5.png').convert_alpha()
 				self.contador+=1
-			if self.contador==self.itr*6:
-				self.contador=0
+			if self.contador>=self.itr*6 and self.contador<=self.itr*7:
 				self.image=pygame.image.load('images/player_run_right1.png').convert_alpha()
+				self.contador+=1
+			if self.contador==self.itr*7:
+				self.contador=0
 		if self.movx==0:
 			self.contador=0
 			if self.direccion==0:
@@ -179,6 +181,8 @@ class Player(pygame.sprite.Sprite):
 					self.image=pygame.image.load('images/dead_tipe3.png')
 			if enemy.tipe==4:
 				self.hp-=1
+			if enemy.tipe==10:
+				self.hp=0
 		
 		grab_object=pygame.sprite.spritecollide(self,self.level.object_list,False)
 		for obj in grab_object:

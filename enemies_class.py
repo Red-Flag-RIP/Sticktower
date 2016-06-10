@@ -6,6 +6,7 @@ width=36*20
 height=540
 
 class saw(pygame.sprite.Sprite):
+	player=None
 	tipe=1
 	level=None
 	d=-2
@@ -34,6 +35,7 @@ class saw(pygame.sprite.Sprite):
 			self.contador=0
 
 class arrow(pygame.sprite.Sprite):
+	player=None
 	tipe=2
 	level=None
 	d=-4
@@ -50,6 +52,7 @@ class arrow(pygame.sprite.Sprite):
 			self.rect.x=self.xin
 
 class guardian(pygame.sprite.Sprite):
+	player=None
 	tipe=3
 	level=None
 	def __init__(self,p):
@@ -59,6 +62,7 @@ class guardian(pygame.sprite.Sprite):
 		self.rect.x=p[0]
 		self.rect.y=p[1]
 class fire(pygame.sprite.Sprite):
+	player=None
 	tipe=4
 	level=None
 	contador=0
@@ -84,6 +88,7 @@ class fire(pygame.sprite.Sprite):
 				self.contador=0
 
 class boss1(pygame.sprite.Sprite):
+	player=None
 	tipe=6
 	level=None
 	contador=0
@@ -153,6 +158,7 @@ def brensenham_bala(p1,p2,c):
 	return (x,y)
 
 class gbala(pygame.sprite.Sprite):
+	player=None
 	tipe=5
 	direccion=0
 	level=None
@@ -238,4 +244,59 @@ class gbala(pygame.sprite.Sprite):
 				self.timer=0
 
 
-		
+class boss2(pygame.sprite.Sprite):
+	charge=0
+	conteo_pasos=0
+	itr=7
+	go_back=0
+	tipe=10
+	def __init__(self):
+		pygame.sprite.Sprite.__init__(self)
+		self.image=pygame.image.load('images/boss2/boss1run.png')	
+		self.rect=self.image.get_rect()
+		self.rect.x=36*15
+		self.rect.y=height-36*21-14
+		self.pi=[self.rect.x,self.rect.y]
+		self.pf=[36*3,self.rect.y]
+	def charging(self):
+		if self.rect.x>=self.pi[0]:
+			self.charge=1
+		if self.charge==1:
+			self.rect.x-=3
+			if self.conteo_pasos<self.itr:
+				self.image=pygame.image.load('images/boss2/boss2run.png').convert_alpha()
+				self.conteo_pasos+=1
+			if self.conteo_pasos>=self.itr and self.conteo_pasos <=self.itr*2:
+				self.image=pygame.image.load('images/boss2/boss3run.png').convert_alpha()
+				self.conteo_pasos+=1
+			if self.conteo_pasos>=self.itr*2 and self.conteo_pasos <=self.itr*3:
+				self.image=pygame.image.load('images/boss2/boss1run.png').convert_alpha()
+				self.conteo_pasos+=1
+			if self.conteo_pasos==self.itr*3:
+				self.conteo_pasos=0
+		if self.rect.x<=self.pf[0]:
+			self.charge=0
+			self.go_back=1
+			self.conteo_pasos=0
+
+	def goback(self):
+			if self.go_back==1:
+				self.rect.x+=3
+				
+				if self.conteo_pasos<self.itr:
+					self.image=pygame.image.load('images/boss2/boss1runr.png').convert_alpha()
+					self.conteo_pasos+=1
+				if self.conteo_pasos>=self.itr and self.conteo_pasos <=self.itr*2:
+					self.image=pygame.image.load('images/boss2/boss2runr.png').convert_alpha()
+					self.conteo_pasos+=1
+				if self.conteo_pasos>=self.itr*2 and self.conteo_pasos <=self.itr*3:
+					self.image=pygame.image.load('images/boss2/boss3runr.png').convert_alpha()
+					self.conteo_pasos+=1
+				if self.conteo_pasos==self.itr*3:
+					self.conteo_pasos=0
+			if self.rect.x>=self.pi[0]:
+				self.go_back=0
+
+	def update(self):
+			self.charging()
+			self.goback()

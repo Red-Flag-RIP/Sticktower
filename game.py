@@ -208,6 +208,7 @@ class level2(level):
 	fpos=[  [36,height-36*6+18],[36+18,height-36*6+18],
 		[36*16,height-36*10+18],[36*16+18,height-36*10+18]
 		]
+
 	def __init__(self):
 		level.__init__(self)
 
@@ -236,7 +237,8 @@ class level2(level):
 			self.enemies_list.add(flame)
 		vida=barra()
 		self.visible_objects.add(vida)
-		
+		boss=boss2()
+		self.enemies_list.add(boss)
 class background(pygame.sprite.Sprite):
 	def __init__(self,imagen):
 		pygame.sprite.Sprite.__init__(self)
@@ -405,7 +407,7 @@ if __name__ == '__main__':
 			if bala.direccion==1:
 				if player.objeto <=1:
 					player.hp=0
-					player.imagen=explosion
+					player.exp=1
 					bala.rect.x=bala.pi[0]
 					bala.rect.y=bala.pi[1]
 		collide_boss=pygame.sprite.spritecollide(player,bossls,False)
@@ -495,8 +497,9 @@ if __name__ == '__main__':
 		obj.player=player
 	for v in actual_level.visible_objects:
 		v.player=player
+	for e in actual_level.enemies_list:
+		e.player=player
 	player.level=actual_level
-
 	active_ls.add(back)
 	active_ls.add(player)
 
