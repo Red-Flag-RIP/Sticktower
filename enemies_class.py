@@ -245,12 +245,15 @@ class gbala(pygame.sprite.Sprite):
 
 
 class boss2(pygame.sprite.Sprite):
+	hp=100
 	charge=0
 	conteo_pasos=0
 	itr=7
 	go_back=0
 	tipe=10
 	atack=0
+	level=None
+	dead=0
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
 		self.image=pygame.image.load('images/boss2/boss1run.png')	
@@ -319,3 +322,9 @@ class boss2(pygame.sprite.Sprite):
 			self.charging()
 			self.goback()
 			self.atacking()
+			shoted=pygame.sprite.spritecollide(self,self.level.object_list,False)
+			for obj in shoted:
+				if obj.tipe==4:
+					self.hp-=25
+					obj.grab=1
+					obj.disparo=0

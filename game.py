@@ -165,12 +165,12 @@ class level1(level):
 			flame=fire(f)
 			flame.level=self
 			self.enemies_list.add(flame)
-		roca=proyectil('images/rock.png',[36*3,-height+36*4+8])
+		roca=proyectil('images/rock.png',[36*18,-height+36*12+8])
 		self.object_list.add(roca)
-		escudo=shield('images/shield.png',[36*16,height-36])
+		escudo=shield('images/shield.png',[36*16,height-54])
 		self.object_list.add(escudo)
-		espada=sword('images/sword.png',[36*4,height-36*19])
-		self.object_list.add(espada)
+		plushp=health('images/health.png',[36*4,height-36*19])
+		self.object_list.add(plushp)
 		vida=barra()
 		self.visible_objects.add(vida)
 
@@ -180,7 +180,7 @@ class level2(level):
 		[36*3,36,0,height-36*5],
 		[36*2,36,0,height-36*9],
 		[36*7,36,36*13,height-36*9],
-		[36*2,36,36*5,height-36*11],
+		[36*2,36,36*5,height-36*11], 
 		[36*2,36,36*10,height-36*13],
 		[36*3,36,36*17,height-36*14],
 		[36*2,36,36*10,height-36*16],
@@ -239,6 +239,16 @@ class level2(level):
 		self.visible_objects.add(vida)
 		boss=boss2()
 		self.enemies_list.add(boss)
+		vidaboss=barra()
+		vidaboss.boss=boss
+		vidaboss.b=1
+		self.visible_objects.add(vidaboss)
+		pistola=gun()
+		self.object_list.add(pistola)
+		municion=ammo()
+		municion.gun=pistola
+		self.object_list.add(municion)		
+
 class background(pygame.sprite.Sprite):
 	def __init__(self,imagen):
 		pygame.sprite.Sprite.__init__(self)
@@ -335,8 +345,8 @@ if __name__ == '__main__':
 	end=False
 	clock=pygame.time.Clock()
 	pygame.key.set_repeat(10,50)
-
-	
+	cause=0
+	music('music/The Dark Amulet.mp3')
 	while not end_level:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -360,12 +370,10 @@ if __name__ == '__main__':
 				if event.key==pygame.K_LEFT:
 					player.movx=0
 				if event.key == pygame.K_ESCAPE:
-						pause=True
+					pause=True 
 				if event.key == pygame.K_l:
-						end_level=True
-			
-		#reloj
-
+					end_level=True
+				
 		total_segundos = con_cuadros // tasa_cambio
 		minutos = total_segundos // 60
 		segundos = total_segundos % 60
@@ -390,7 +398,7 @@ if __name__ == '__main__':
 		#interactuar con el hp del jugador
 		if player.hp<=0:
 			window.blit(screen,[-10,-10])
-			dead()
+			dead(cause)
 
 		
 		#Muere si toca el fondo	
@@ -406,6 +414,7 @@ if __name__ == '__main__':
 					bala.rect.y=bala.pi[1]
 			if bala.direccion==1:
 				if player.objeto <=1:
+					cause=5
 					player.hp=0
 					player.exp=1
 					bala.rect.x=bala.pi[0]
@@ -478,7 +487,7 @@ if __name__ == '__main__':
 	bpos= [ [36,height-36*8],
 		[36,height-36*16]
 	      ]
-	
+	isdead=0
 	S_door_pos=[width-36*4,-height+36*2-14]
 	S_door=pygame.image.load('images/doorclosed.png')
 
@@ -491,7 +500,7 @@ if __name__ == '__main__':
 	back=background('images/nivel2map.png')
 	level_position=1
 	actual_level=level_list[level_position]
-
+	
 	#nivel del jugador
 	actual_level.player=player
 	for obj in actual_level.object_list:
@@ -500,6 +509,7 @@ if __name__ == '__main__':
 		v.player=player
 	for e in actual_level.enemies_list:
 		e.player=player
+		e.level=actual_level
 	player.level=actual_level
 	active_ls.add(back)
 	active_ls.add(player)
@@ -510,8 +520,7 @@ if __name__ == '__main__':
 	ls_balas_nivel2.draw(window)
 	window.blit(player.image,(player.rect.x,player.rect.y))
 	actual_level.draw(window)
-
-
+	music('music/Arabesque.mp3')
 	while not end_level:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -592,6 +601,20 @@ if __name__ == '__main__':
 				clock.tick(60)
 			
 				pygame.display.flip()
+
+		for boss in actual_level.enemies_list:
+			if boss.tipe==10:
+				boss.level=actual_level
+				if boss.hp<=0:
+					boss.dead=1
+					actual_level.enemies_list.remove(boss)
+					actual_level.visible_objects.empty()
+					isdead=boss.dead
+			
+		if isdead==1:
+			S_door=pygame.image.load('images/dooropen.png')
+		if isdead==1 and player.rect.x>=width-36*4 and player.rect.x<=width-36*3 and player.rect.y>=36*1 and player.rect.y<=36*3:
+			end_level=True
 
 		total_segundos = con_cuadros // tasa_cambio
 		minutos = total_segundos // 60

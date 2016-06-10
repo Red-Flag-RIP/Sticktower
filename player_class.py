@@ -1,6 +1,6 @@
 import pygame
 from game import *
-
+from funciones import *
 
 class Player(pygame.sprite.Sprite):
 	image=None
@@ -121,6 +121,11 @@ class Player(pygame.sprite.Sprite):
 		#plataforma en movimiento
 		if len(coll_movls) > 0 or self.rect.bottom >= height:
 			self.movy = -6
+	
+	def objects(self):
+		if self.objeto.tipe==1:
+			if self.disparo==1:
+				self.objeto.disparo=1
 
 	def update(self):
 		self.look()
@@ -180,9 +185,10 @@ class Player(pygame.sprite.Sprite):
 					self.hp=0
 					self.image=pygame.image.load('images/dead_tipe3.png')
 			if enemy.tipe==4:
-				self.hp-=1
+				self.hp-=3
 			if enemy.tipe==10:
 				self.hp=0
+				self.image=pygame.image.load('images/dead_tipe2.png')
 		
 		grab_object=pygame.sprite.spritecollide(self,self.level.object_list,False)
 		for obj in grab_object:
@@ -190,8 +196,11 @@ class Player(pygame.sprite.Sprite):
 			self.objeto=obj.tipe
 			if self.direccion==1:
 				obj.direccion==1	
-		
-		if self.exp>1:
+			if obj.tipe==3:
+				self.hp=100
+				self.level.object_list.remove(obj)
+		if self.exp==1:
+			
 			self.image=pygame.image.load('images/explosion.png')
 			
 
@@ -210,22 +219,21 @@ class proyectil(pygame.sprite.Sprite):
 		self.grab=0
 	def update(self):
 		if self.disparo==1:
+			if self.grab==1:
+				self.rect.x=self.player.rect.x+33
+				self.rect.y=self.player.rect.y+18
 			self.rect.x+=5
 			self.grab=0
 			if self.rect.x>=width:
 				self.grab=1
 				self.disparo=0
 		if self.grab==1:
-			if self.direccion==0:
-				self.rect.x=self.player.rect.x+33
-				self.rect.y=self.player.rect.y+18
-			if self.direccion==1:
-				self.rect.x=self.player.rect.x-33
-				self.rect.y=self.player.rect.y+18
-
+			self.rect.x=-width
+			
+   
 class shield(pygame.sprite.Sprite):
 	player=None
-	tipe=2
+	tipe=2    
 	def __init__(self, imagen,posa):
 		pygame.sprite.Sprite.__init__(self)
 		self.image=pygame.image.load(imagen).convert_alpha()
@@ -245,7 +253,7 @@ class shield(pygame.sprite.Sprite):
 				self.rect.x=self.player.rect.x-23
 				self.rect.y=self.player.rect.y+7
 
-class sword(pygame.sprite.Sprite):
+class health(pygame.sprite.Sprite):
 	player=None
 	tipe=3
 	def __init__(self, imagen,posa):
@@ -257,18 +265,12 @@ class sword(pygame.sprite.Sprite):
 		self.rect.y=posa[1]+15
 		self.grab=0
 		self.disparo=0	
-	def update(self):
-		
-		if self.grab==1:
-			if self.direccion==0:
-				self.rect.x=self.player.rect.x+23
-				self.rect.y=self.player.rect.y+7
-			if self.direccion==1:
-				self.rect.x=self.player.rect.x-23
-				self.rect.y=self.player.rect.y+7
+	
 
 class barra(pygame.sprite.Sprite):
 	player=None
+	boss=None
+	b=0
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
 		self.image=pygame.image.load('images/barra1.png').convert_alpha()
@@ -276,17 +278,79 @@ class barra(pygame.sprite.Sprite):
 		self.rect.x=54
 		self.rect.y=height-46
 	def update(self):
-		self.rect.x=self.player.rect.x+8
-		self.rect.y=self.player.rect.y-9
-		if self.player.hp>=95:
-			self.image=pygame.image.load('images/barra1.png').convert_alpha()
-		if self.player.hp>=80 and self.player.hp <=95:
-			self.image=pygame.image.load('images/barra2.png').convert_alpha()
-		if self.player.hp>=60 and self.player.hp <=80:
-			self.image=pygame.image.load('images/barra3.png').convert_alpha()
-		if self.player.hp>=40 and self.player.hp <=60:
-			self.image=pygame.image.load('images/barra4.png').convert_alpha()
-		if self.player.hp>=1 and self.player.hp <=40:
-			self.image=pygame.image.load('images/barra5.png').convert_alpha()
-		if self.player.hp<=0:
-			self.image=pygame.image.load('images/barra6.png').convert_alpha()
+		if self.b==0:
+			self.rect.x=self.player.rect.x+8
+			self.rect.y=self.player.rect.y-9
+			if self.player.hp>=95:
+				self.image=pygame.image.load('images/barra1.png').convert_alpha()
+			if self.player.hp>=80 and self.player.hp <=95:
+				self.image=pygame.image.load('images/barra2.png').convert_alpha()
+			if self.player.hp>=60 and self.player.hp <=80:
+				self.image=pygame.image.load('images/barra3.png').convert_alpha()
+			if self.player.hp>=40 and self.player.hp <=60:
+				self.image=pygame.image.load('images/barra4.png').convert_alpha()
+			if self.player.hp>=1 and self.player.hp <=40:
+				self.image=pygame.image.load('images/barra5.png').convert_alpha()
+			if self.player.hp<=0:
+				self.image=pygame.image.load('images/barra6.png').convert_alpha()
+		if self.b==1:
+			self.rect.x=self.boss.rect.x+8
+			self.rect.y=self.boss.rect.y-9
+			if self.boss.hp>=95:
+				self.image=pygame.image.load('images/barra1.png').convert_alpha()
+			if self.boss.hp>=80 and self.boss.hp <=95:
+				self.image=pygame.image.load('images/barra2.png').convert_alpha()
+			if self.boss.hp>=60 and self.boss.hp <=80:
+				self.image=pygame.image.load('images/barra3.png').convert_alpha()
+			if self.boss.hp>=40 and self.boss.hp <=60:
+				self.image=pygame.image.load('images/barra4.png').convert_alpha()
+			if self.boss.hp>=1 and self.boss.hp <=40:
+				self.image=pygame.image.load('images/barra5.png').convert_alpha()
+			if self.boss.hp<=0:
+				self.image=pygame.image.load('images/barra6.png').convert_alpha()
+class gun(pygame.sprite.Sprite):
+	direccion=0
+	grab=0
+	tipe=4
+	player=None
+	recarga=0
+	disparo=0
+	def __init__(self):
+		pygame.sprite.Sprite.__init__(self)
+		self.image=pygame.image.load('images/gun.png')
+		self.rect=self.image.get_rect()
+		self.rect.x=36*2
+		self.rect.y=height-36*28+26
+	def update(self):
+		if self.grab==1:
+			self.rect.x=-width
+			self.image=pygame.image.load('images/bala_player.png')
+		if self.disparo==1 and self.recarga>0:
+			if self.grab==1:
+				self.rect.x=self.player.rect.x+33
+				self.rect.y=self.player.rect.y+18
+			self.rect.x+=5
+			self.grab=0
+			if self.rect.x>=width:
+				self.grab=1
+				self.disparo=0
+		if self.grab==1:
+			self.rect.x=-width
+		
+
+class ammo(pygame.sprite.Sprite):
+	tipe=11
+	direccion=0
+	grab=0
+	player=None
+	gun=None
+	def __init__(self):
+		pygame.sprite.Sprite.__init__(self)
+		self.image=pygame.image.load('images/ammo.png')
+		self.rect=self.image.get_rect()
+		self.rect.x=36*18
+		self.rect.y=height-36*21+24
+	def update(self):
+		if self.grab==1:
+			self.rect.x=-width
+			self.gun.recarga=10
