@@ -263,7 +263,7 @@ class boss2(pygame.sprite.Sprite):
 		self.pi=[self.rect.x,self.rect.y]
 		self.pf=[36*3,self.rect.y]
 	def charging(self):
-		if self.rect.x>=self.pi[0] and self.player.rect.x<=36*7:
+		if self.rect.x>=self.pi[0] and self.player.rect.x<=36*12:
 			self.atack=0
 			self.charge=1
 		if self.charge==1:

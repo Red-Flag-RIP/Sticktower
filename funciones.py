@@ -4,49 +4,43 @@ from game import *
 gray=(105,105,105)
 almost_black=(57,57,57)
 pygame.init()
-fuente = pygame.font.Font(None, 36) 
+fuente = pygame.font.Font('freesansbold.ttf', 26) 
 clock=pygame.time.Clock()
+
+def myquit():
+	pygame.quit()
+	sys.exit(0)
+
 class button(pygame.sprite.Sprite):
+	tipe=0
 	pressed=0
-	mposx=0
-	mposy=0
-	def __init__ (self,tam,pos):
+	mouse=None
+	text=None
+	action=0
+	def __init__ (self,pos):
 		pygame.sprite.Sprite.__init__(self)
-		self.image=pygame.Surface([tam[0],tam[1]])
+		self.image=pygame.image.load('images/button.png')
 		self.image.fill(gray)
 		self.rect=self.image.get_rect()
 		self.rect.x=pos[0]
 		self.rect.y=pos[1]
-		self.tam=[tam[0],tam[1]]
-		self.mouse=[self.mposx,self.mposy]
 	def update(self):
-		if self.mouse[0]>self.rect.x:
-			self.image.fill(almost_black)
-		
+		if self.mouse[0]>=self.rect.left and self.mouse[0]<=self.rect.right and self.mouse[1]>=self.rect.top and self.mouse[1]<=self.rect.bottom:
+			self.image=pygame.image.load('images/onbutton.png')
+		else:
+			self.image=pygame.image.load('images/button.png')
+		if self.mouse[0]>=self.rect.left and self.mouse[0]<=self.rect.right and self.mouse[1]>=self.rect.top and self.mouse[1]<=self.rect.bottom and self.pressed==1:
+			self.action=1
 def music(archivo):
 	pygame.mixer.music.load(archivo)
-	pygame.mixer.music.play()
+	pygame.mixer.music.play(-1)
 	pygame.mixer.music.set_volume(0.3)
 
-def mixer(archivo):
-	sound=pygame.mixer.Sound(archivo)
-	sound.play()
-	sound.set_volume(0.6)
 
-def dead(causa):
-	if causa==5:
-		music('music/Chunky Explosion.mp3')
-	while True:
-		for event in pygame.event.get():
-		#print(event)
-			if event.type == pygame.QUIT:
-				pygame.quit()
-				quit()
-                
-	#gameDisplay.fill(white)
+
+
+		
         
 
-		pygame.display.update()
-		clock.tick(15) 
 
 

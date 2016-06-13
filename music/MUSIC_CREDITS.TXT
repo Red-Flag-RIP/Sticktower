@@ -47,3 +47,21 @@ License(s):
 
 File(s):
     *Chunky Explosion.mp3
+
+
+--------------------------------------------
+
+Tittle:
+	Carnival Rides
+
+Author:
+	Écrivain
+
+URL:
+	opengameart.org/content/carnival-rides
+
+License(s):
+	Public domain
+
+File(s):
+	*carnivalrides.ogg

@@ -199,8 +199,10 @@ class Player(pygame.sprite.Sprite):
 			if obj.tipe==3:
 				self.hp=100
 				self.level.object_list.remove(obj)
+			if obj.event==0:
+				self.level.puntaje+=50
+				obj.event=1
 		if self.exp==1:
-			
 			self.image=pygame.image.load('images/explosion.png')
 			
 
@@ -208,6 +210,7 @@ class Player(pygame.sprite.Sprite):
 class proyectil(pygame.sprite.Sprite):
 	player=None
 	tipe=1
+	event=0
 	def __init__(self, imagen,posa):
 		pygame.sprite.Sprite.__init__(self)
 		self.image=pygame.image.load(imagen).convert_alpha()
@@ -234,6 +237,7 @@ class proyectil(pygame.sprite.Sprite):
 class shield(pygame.sprite.Sprite):
 	player=None
 	tipe=2    
+	event=0
 	def __init__(self, imagen,posa):
 		pygame.sprite.Sprite.__init__(self)
 		self.image=pygame.image.load(imagen).convert_alpha()
@@ -256,6 +260,7 @@ class shield(pygame.sprite.Sprite):
 class health(pygame.sprite.Sprite):
 	player=None
 	tipe=3
+	event=0
 	def __init__(self, imagen,posa):
 		pygame.sprite.Sprite.__init__(self)
 		self.image=pygame.image.load(imagen).convert_alpha()
@@ -315,6 +320,7 @@ class gun(pygame.sprite.Sprite):
 	player=None
 	recarga=0
 	disparo=0
+	event=0
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
 		self.image=pygame.image.load('images/gun.png')
@@ -344,6 +350,7 @@ class ammo(pygame.sprite.Sprite):
 	grab=0
 	player=None
 	gun=None
+	event=0
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
 		self.image=pygame.image.load('images/ammo.png')
