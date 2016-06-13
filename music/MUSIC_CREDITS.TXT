@@ -65,3 +65,20 @@ License(s):
 
 File(s):
 	*carnivalrides.ogg
+
+--------------------------------------------
+
+Tittle:
+	jumppp11
+
+Author:
+	IgnasD
+
+URL:
+	http://opengameart.org/content/jumping-man-sounds
+
+License(s):
+	Public domain
+
+File(s):
+	*jumpp11.ogg
